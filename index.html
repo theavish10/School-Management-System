@@ -1,0 +1,281 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A//OS - Terminal Access</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #0a0a0a; --accent: #ccff00; 
+            --text: #fff; --border: #1a1a1a; --font-main: 'Syne', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--bg); color: var(--text); font-family: var(--font-mono); 
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Background Animation Layer */
+        .bg-glow {
+            position: absolute; width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(204, 255, 0, 0.05) 0%, transparent 70%);
+            z-index: -1; animation: pulse 8s infinite alternate;
+        }
+        @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.5); } }
+
+        .login-card {
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 3.5rem; width: 420px; text-align: center;
+            position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .login-card::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .logo-box { margin-bottom: 2rem; }
+        .logo-img { width: 80px; margin-bottom: 10px; }
+        .logo-text { font-family: 'Syne'; font-size: 2rem; letter-spacing: -2px; color: var(--accent); }
+
+        h2 { font-family: 'Syne'; font-size: 0.8rem; letter-spacing: 4px; color: #444; margin-bottom: 2rem; }
+
+        .input-group { margin-bottom: 1.5rem; text-align: left; }
+        .input-group label { display: block; font-size: 0.6rem; color: #666; margin-bottom: 8px; letter-spacing: 1px; }
+        
+        select, input {
+            width: 100%; background: #000; border: 1px solid var(--border);
+            padding: 15px; color: #fff; font-family: var(--font-mono);
+            outline: none; transition: 0.3s;
+        }
+        select:focus, input:focus { border-color: var(--accent); }
+
+        .login-btn {
+            width: 100%; background: var(--accent); color: #000; border: none;
+            padding: 15px; font-weight: bold; cursor: pointer; margin-top: 1rem;
+            text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px;
+        }
+        .login-btn:hover { filter: brightness(1.2); box-shadow: 0 0 20px rgba(204, 255, 0, 0.2); }
+
+        .footer-note { margin-top: 2rem; font-size: 0.55rem; color: #333; letter-spacing: 1px; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <div class="login-card">
+        <div class="logo-box">
+            <div class="logo-text">A//OS</div>
+        </div>
+
+        <h2>AUTHENTICATION</h2>
+
+        <div class="input-group">
+            <label>SELECT ACCESS LEVEL</label>
+            <select id="userRole">
+                <option value="admin">ADMINISTRATOR (FULL ACCESS)</option>
+                <option value="teacher">FACULTY / TEACHER</option>
+                <option value="student">STUDENT / PARENT</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>ACCESS KEY (MOCK)</label>
+            <input type="password" value="********" readonly>
+        </div>
+
+        <button class="login-btn" onclick="handleAuth()">Access Terminal</button>
+
+        <p class="footer-note">// SECURED BY A//OS ENCRYPTION CORE</p>
+    </div>
+
+    <script>
+        function handleAuth() {
+            const role = document.getElementById('userRole').value;
+            
+            // Step 1: User choice save karna taaki Dashboard role pehchan sake
+            localStorage.setItem('userRole', role);
+            
+            // Step 2: Redirect to Dashboard
+            window.location.href = 'dashboard.html';
+        }
+
+        // Agar user pehle se logged in hai toh check kar sakte hain (Optional)
+        window.onload = () => {
+            // Clearing previous session on landing
+            localStorage.removeItem('userRole');
+        };
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A//OS - Terminal Access</title>
+    <style>
+        :root {
+            --bg: #020202; /* Deep Black */
+            --surface: rgba(255, 255, 255, 0.03); /* Glass Effect */
+            --accent: #ccff00; /* Neon Green */
+            --text: #fff; 
+            --border: rgba(255, 255, 255, 0.1); 
+            --font-main: 'Syne', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body { 
+            background-color: var(--bg);
+            /* Purana Futuristic Grid aur Glow Design */
+            background-image: 
+                radial-gradient(circle at 50% 50%, #1a1a1a 0%, transparent 80%),
+                linear-gradient(var(--border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 100% 100%, 50px 50px, 50px 50px;
+            color: var(--text); 
+            font-family: var(--font-mono); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Animated Pulsing Glow Layer */
+        .bg-glow {
+            position: absolute; width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(204, 255, 0, 0.03) 0%, transparent 70%);
+            z-index: -1; animation: pulse 10s infinite alternate;
+        }
+        @keyframes pulse { from { transform: scale(1); opacity: 0.5; } to { transform: scale(1.4); opacity: 1; } }
+
+        .login-card {
+            background: var(--surface); 
+            backdrop-filter: blur(20px); /* Glassmorphism */
+            border: 1px solid var(--border);
+            padding: 3.5rem; width: 420px; text-align: center;
+            position: relative; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.8);
+            animation: cardEntry 1s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        @keyframes cardEntry {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Top Accent Line */
+        .login-card::before {
+            content: ""; position: absolute; top: -1px; left: -1px; right: -1px; height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        .logo-text { 
+            font-family: 'Syne'; font-size: 2.8rem; letter-spacing: -3px; 
+            color: var(--accent); margin-bottom: 0.5rem;
+        }
+
+        h2 { font-family: 'Syne'; font-size: 0.7rem; letter-spacing: 5px; color: #555; margin-bottom: 2.5rem; text-transform: uppercase; }
+
+        .input-group { margin-bottom: 1.5rem; text-align: left; }
+        .input-group label { display: block; font-size: 0.7rem; color: #666; margin-bottom: 8px; letter-spacing: 1px; text-transform: uppercase; }
+        
+        select, input {
+            width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+            padding: 15px; color: #fff; font-family: var(--font-mono);
+            outline: none; transition: 0.3s;
+        }   
+        /* Select dropdown ke andar ke options ko dark karne ke liye */
+select option {
+    background-color: #0a0a0a; /* Aapka surface color */
+    color: #fff;               /* White text */
+    padding: 10px;
+}
+
+/* Jab option hover ya select ho (Firefox/Chrome compatible) */
+select option:hover, 
+select option:focus, 
+select option:active {
+    background-color: var(--accent) !important;
+    color: #000 !important;
+}
+        select:focus, input:focus { border-color: var(--accent); background: rgba(204, 255, 0, 0.02); }
+
+        .login-btn {
+            width: 100%; background: var(--accent); color: #000; border: none;
+            padding: 18px; font-family: 'Syne'; font-weight: 800; cursor: pointer; margin-top: 1rem;
+            text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px;
+            transition: 0.3s;
+        }
+        .login-btn:hover { 
+            filter: brightness(1.1); 
+            box-shadow: 0 0 25px var(--accent); 
+            transform: translateY(-2px);
+        }
+
+        .footer-note { margin-top: 2.5rem; font-size: 0.55rem; color: #444; letter-spacing: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <div class="login-card">
+        <div class="logo-box">
+            <div class="logo-text">A//OS</div>
+        </div>
+
+        <h2>AUTHENTICATION</h2>
+
+        <div class="input-group">
+            <label>SELECT ACCESS LEVEL</label>
+            <select id="userRole">
+                <option value="admin">ADMINISTRATOR (FULL ACCESS)</option>
+                <option value="teacher">FACULTY / TEACHER</option>
+                <option value="student">STUDENT / PARENT</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label>ENCRYPTION_KEY</label>
+            <input type="password" id="securityToken" placeholder="********">
+        </div>
+
+        <button class="login-btn" onclick="handleAuth()">Initialize Session</button>
+
+        <p class="footer-note">// SECURED BY A//OS ENCRYPTION CORE v2.0</p>
+    </div>
+
+    <script>
+        function handleAuth() {
+            const btn = document.querySelector('.login-btn');
+            const role = document.getElementById('userRole').value;
+            
+            btn.innerText = "AUTHENTICATING...";
+            
+            // Artificial delay for futuristic feel
+            setTimeout(() => {
+                localStorage.setItem('userRole', role);
+                // localStorage.setItem('username', user);
+                localStorage.setItem('isLoggedIn', 'true');
+                window.location.href = 'dashboard.html';
+            }, 1200);
+        }
+
+        window.onload = () => {
+            localStorage.removeItem('userRole');
+        };
+    </script>
+</body>
+</html>

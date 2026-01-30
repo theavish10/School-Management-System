@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A//OS - Teacher Salary Portal</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #0a0a0a; --accent: #00ccff; /* Salary Blue */
+            --text: #fff; --border: #1a1a1a; --font-mono: 'Space Mono', monospace;
+            --pending: #ff0055;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@700;800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-mono); display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; height: 100vh; background: var(--bg); z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.closed{
+            transform: translateX(-260px);
+        }
+        .logo { font-family: 'Syne'; font-size: 2.2rem; color: var(--accent); margin-bottom: 3rem; letter-spacing: -2px; }
+        .nav-links li { list-style: none; margin: 1.5rem 0; font-weight: bold; text-transform: uppercase; font-size: 1rem; }
+        .nav-links a { text-decoration: none; color: #444; transition: 0.3s; }
+        .nav-links li.active a, .nav-links a:hover { color: var(--accent); }
+
+        .content { flex: 1; margin-left: 260px; padding: 60px; }
+        h1 { font-family: 'Syne'; font-size: 3rem; letter-spacing: -2px; margin-bottom: 30px; }
+
+        .salary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .salary-card { background: var(--surface); border: 1px solid var(--border); padding: 25px; position: relative; transition: 0.3s; }
+        .salary-card:hover { border-color: var(--accent); }
+        .salary-card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--border); }
+        .salary-card.paid::before { background: var(--accent); }
+
+        .status-tag { font-size: 0.6rem; padding: 4px 8px; border: 1px solid #333; margin-bottom: 10px; display: inline-block; text-transform: uppercase; }
+        .status-tag.paid { color: var(--accent); border-color: var(--accent); }
+        .status-tag.pending { color: var(--pending); border-color: var(--pending); }
+
+        .pay-btn { background: var(--accent); color: #000; border: none; padding: 10px 15px; width: 100%; margin-top: 15px; font-weight: bold; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; }
+        .pay-btn.pending { background: transparent; border: 1px solid var(--pending); color: var(--pending); }
+
+        @media print {
+            .sidebar, .add-btn, .btn-action, .stats-grid { display: none !important; }
+            .content { margin: 0; padding: 0; }
+            body { background: white; color: black; }
+        }
+
+        .toggle-btn { position: fixed; bottom: 20px; left: 20px; z-index: 1100; background: var(--accent); border: none; padding: 10px; cursor: pointer; font-weight: bold; font-family: var(--font-mono); }
+    </style>
+</head>
+<body>
+
+    <button class="toggle-btn" onclick="toggleMenu()">MENU</button>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="logo">A//OS</div>
+        <ul class="nav-links">
+            <li><a href="finances.html">Finances</a></li>
+            <li class="active"><a href="salary.html">Salary Portal</a></li>
+            
+        </ul>
+    </nav>
+
+    <main class="content" id="mainContent">
+        <h1>FACULTY SALARY PAYOUT</h1>
+        <div class="salary-grid" id="salaryGrid"></div>
+    </main>
+
+    <script>
+        let faculty = JSON.parse(localStorage.getItem('facultyDB')) || [];
+        let salaryStatus = JSON.parse(localStorage.getItem('salaryDB')) || {};
+
+// function renderSalary() {
+//     const grid = document.getElementById('salaryGrid');
+//     let faculty = JSON.parse(localStorage.getItem('facultyDB')) || [];
+
+// grid.innerHTML = faculty.map(f => {
+//     const isPaid = salaryStatus[f.id] === 'Paid';
+//     const teacherSalary = f.salary || 35000;
+    
+//     return `
+//         <div class="salary-card ${isPaid ? 'paid' : ''}" style="min-height: 250px;"> <span class="status-tag ${isPaid ? 'paid' : 'pending'}">
+//                 ${isPaid ? '✓ SALARY PAID' : '⚠ PAYMENT DUE'}
+//             </span>
+            
+//             <h2 style="font-family: 'Syne'; font-size: 1.2rem; margin-bottom: 5px;">
+//                 ${f.name.toUpperCase()}
+//             </h2>
+
+//             <p style="font-size: 0.7rem; color: #555; margin-bottom: 15px;">
+//                 DEPT: ${f.dept || 'GENERAL'}
+//             </p>
+            
+//             <div style="border-top: 1px solid #111; padding-top: 15px; margin-bottom: 15px;">
+//                 <p style="font-size: 0.6rem; color: #444; text-transform: uppercase;">Monthly Payout</p>
+//                 <p style="font-size: 1.5rem; color: ${isPaid ? 'var(--accent)' : '#fff'}; font-weight: bold;">
+//                     ₹${parseInt(teacherSalary).toLocaleString()}
+//                 </p>
+//             </div>
+//             <button class="pay-btn ${isPaid ? 'revoke' : ''}" onclick="toggleSalary('${f.id}', '${f.name}', ${teacherSalary})">
+//                 ${isPaid ? 'REVOKE SALARY' : 'PAY SALARY'}
+//             </button>
+//         </div>
+//     `;
+// }).join('');
+// }
+
+function renderSalary() {
+    const grid = document.getElementById('salaryGrid');
+    let faculty = JSON.parse(localStorage.getItem('facultyDB')) || [];
+    
+    grid.innerHTML = faculty.map(f => {
+        const isPaid = salaryStatus[f.id] === 'Paid';
+        
+        const displaySalary = f.salary ? f.salary : 35000;
+
+        return `
+            <div class="salary-card ${isPaid ? 'paid' : ''}">
+                <span class="status-tag ${isPaid ? 'paid' : 'pending'}">
+                    ${isPaid ? '✓ SALARY PAID' : '⚠ PAYMENT DUE'}
+                </span>
+                <h2>${f.name.toUpperCase()}</h2>
+                <p>DEPT: ${f.dept || 'GENERAL'}</p>
+                
+                <div style="border-top: 1px solid #111; padding-top: 15px; margin-top: 10px;">
+                    <p style="font-size: 0.6rem; color: #444;">MONTHLY PAYOUT</p>
+                    <p style="font-size: 1.2rem; color: ${isPaid ? 'var(--accent)' : '#fff'}">
+                        ₹${parseInt(displaySalary).toLocaleString()}
+                    </p>
+                </div>
+
+                <button class="pay-btn" onclick="toggleSalary('${f.id}', '${f.name}', ${displaySalary})">
+                    ${isPaid ? 'REVOKE SALARY' : 'PAY SALARY'}
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+        // function toggleSalary(id, name) {
+        //     const wasPaid = salaryStatus[id] === 'Paid';
+        //     salaryStatus[id] = wasPaid ? 'Pending' : 'Paid';
+        //     localStorage.setItem('salaryDB', JSON.stringify(salaryStatus));
+
+        //     let transactions = JSON.parse(localStorage.getItem("financeDB")) || [];
+        //     const amount = 35000;
+
+        //     if (!wasPaid) {
+        //         // DISBURSE: Expense add hogi Ledger mein
+        //         transactions.push({
+        //             txnId: "SAL-" + id + "-" + Date.now(),
+        //             date: new Date().toISOString().split('T')[0],
+        //             desc: "Salary Paid: " + name,
+        //             category: 'Expense', // Salary kharcha hai
+        //             amount: amount
+        //         });
+        //     } else {
+        //         // REVOKE: Entry delete hogi
+        //         transactions = transactions.filter(t => t.desc !== "Salary Paid: " + name);
+        //     }
+
+        //     localStorage.setItem("financeDB", JSON.stringify(transactions));
+        //     renderSalary();
+        // }
+
+        // 1. Function mein 'amount' parameter zaroori hai
+function toggleSalary(id, name, amount) { 
+    const wasPaid = salaryStatus[id] === 'Paid';
+    salaryStatus[id] = wasPaid ? 'Pending' : 'Paid';
+    localStorage.setItem('salaryDB', JSON.stringify(salaryStatus));
+
+    let transactions = JSON.parse(localStorage.getItem("financeDB")) || [];
+
+    if (!wasPaid) {
+        // DISBURSE: Expense add hogi Ledger mein
+        transactions.push({
+            txnId: "SAL-" + id + "-" + Date.now(),
+            date: new Date().toISOString().split('T')[0],
+            desc: "Salary Paid: " + name,
+            category: 'Expense',
+            amount: amount 
+        });
+    } else {
+        // REVOKE: Entry delete hogi
+        transactions = transactions.filter(t => t.desc !== "Salary Paid: " + name);
+    }
+
+    localStorage.setItem("financeDB", JSON.stringify(transactions));
+    renderSalary();
+}
+
+    // Navigation Toggle
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('closed');
+        document.getElementById('mainContent').classList.toggle('full');
+
+        const topBar = document.getElementById('topBar');
+        if(topBar) topBar.classList.toggle('expanded');
+    }
+
+    window.onload = renderSalary;
+    </script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A//OS - Fees Management</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #0a0a0a; --accent: #ef1010; 
+            --text: #fff; --border: #1a1a1a; --font-mono: 'Space Mono', monospace;
+            --pending: #ff0055;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@700;800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-mono); display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; height: 100vh; background: var(--bg); z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.closed{
+            transform: translateX(-260px);
+        }
+        .logo { font-family: 'Syne'; font-size: 2.2rem; color: var(--accent); margin-bottom: 3rem; letter-spacing: -2px; }
+        .nav-links li { list-style: none; margin: 1.5rem 0; font-weight: bold; text-transform: uppercase; font-size: 1rem; }
+        .nav-links a { text-decoration: none; color: #444; transition: 0.3s; }
+        .nav-links li.active a, .nav-links a:hover { color: var(--accent); }
+
+        .content { flex: 1; margin-left: 260px; padding: 60px; }
+        h1 { font-family: 'Syne'; font-size: 3rem; letter-spacing: -2px; margin-bottom: 30px; }
+
+        .fees-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .student-fee-card { background: var(--surface); border: 1px solid var(--border); padding: 25px; position: relative; transition: 0.3s; }
+        .student-fee-card:hover { border-color: var(--accent); }
+        .student-fee-card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--border); }
+        .student-fee-card.paid::before { background: var(--accent); }
+
+        .status-tag { font-size: 0.6rem; padding: 4px 8px; border: 1px solid #333; margin-bottom: 10px; display: inline-block; }
+        .status-tag.paid { color: var(--accent); border-color: var(--accent); }
+        .status-tag.pending { color: var(--pending); border-color: var(--pending); }
+
+        .pay-btn { background: var(--accent); color: #000; border: none; padding: 10px 15px; width: 100%; margin-top: 15px; font-weight: bold; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; }
+        .pay-btn.pending { background: transparent; border: 1px solid var(--pending); color: var(--pending); }
+
+        @media print {
+            .sidebar, .add-btn, .btn-action, .stats-grid { display: none !important; }
+            .content { margin: 0; padding: 0; }
+            body { background: white; color: black; }
+        }
+
+        .toggle-btn { position: fixed; bottom: 20px; left: 20px; z-index: 1100; background: var(--accent); border: none; padding: 10px; cursor: pointer; font-weight: bold; font-family: var(--font-mono); }
+        
+    </style>
+</head>
+<body>
+
+    <button class="toggle-btn" onclick="toggleMenu()">MENU</button>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="logo">A//OS</div>
+        <ul class="nav-links">
+            <li><a href="finances.html">Finances</a></li>
+            <li class="active"><a href="fees.html">Fees Portal</a></li>
+        </ul>
+    </nav>
+
+    <main class="content" id="mainContent">
+        <h1>STUDENT FEES PORTAL</h1>
+        
+        <div class="fees-grid" id="feesGrid">
+            </div>
+    </main>
+
+    <script>
+        // Students aur Fees data sync
+        let students = JSON.parse(localStorage.getItem('studentDB')) || [];
+        let feesStatus = JSON.parse(localStorage.getItem('feesDB')) || {};
+
+        // function renderFees() {
+        //     const grid = document.getElementById('feesGrid');
+        //     if(students.length === 0) {
+        //         grid.innerHTML = "<p style='color:#444'>NO STUDENTS REGISTERED IN DATABASE</p>";
+        //         return;
+        //     }
+
+        //     grid.innerHTML = students.map(s => {
+        //         const isPaid = feesStatus[s.id] === 'Paid';
+        //         return `
+        //             <div class="student-fee-card ${isPaid ? 'paid' : ''}">
+        //                 <span class="status-tag ${isPaid ? 'paid' : 'pending'}">
+        //                     ${isPaid ? '✓ FULLY PAID' : '⚠ PAYMENT PENDING'}
+        //                 </span>
+        //                 <h2 style="font-family: 'Syne'; font-size: 1.2rem; margin-bottom: 5px;">${s.name.toUpperCase()}</h2>
+        //                 <p style="font-size: 0.7rem; color: #555; margin-bottom: 15px;">ID: ${s.id} | CLASS: ${s.class || s.grade}</p>
+                        
+        //                 <div style="border-top: 1px solid #111; padding-top: 15px;">
+        //                     <p style="font-size: 0.6rem; color: #444;">ACADEMIC FEES</p>
+        //                     <p style="font-size: 1.1rem; color: ${isPaid ? 'var(--accent)' : '#fff'}">₹50,000</p>
+        //                 </div>
+
+        //                 <button class="pay-btn" onclick="toggleFee('${s.id}', '${s.name}')">
+        //                     ${isPaid ? 'REVOKE PAYMENT' : 'MARK AS PAID'}
+        //                 </button>
+        //             </div>
+        //         `;
+        //     }).join('');
+        // }
+
+        function renderFees() {
+    const grid = document.getElementById('feesGrid');
+    if(students.length === 0) {
+        grid.innerHTML = "<p style='color:#444'>NO STUDENTS REGISTERED IN DATABASE</p>";
+        return;
+    }
+
+    grid.innerHTML = students.map(s => {
+        // 1. Status aur Custom Fees load karna
+        const isPaid = feesStatus[s.id] === 'Paid';
+        
+        // Student object se fees uthao, agar nahi hai toh 2000 default
+        const monthlyFees = s.fees ? s.fees : 2000; 
+
+        return `
+            <div class="student-fee-card ${isPaid ? 'paid' : ''}">
+                <span class="status-tag ${isPaid ? 'paid' : 'pending'}">
+                    ${isPaid ? '✓ FULLY PAID' : '⚠ PAYMENT PENDING'}
+                </span>
+                <h2 style="font-family: 'Syne'; font-size: 1.2rem; margin-bottom: 5px;">${s.name.toUpperCase()}</h2>
+                <p style="font-size: 0.7rem; color: #555; margin-bottom: 15px;">ID: ${s.id} | CLASS: ${s.class || s.grade}</p>
+                
+                <div style="border-top: 1px solid #111; padding-top: 15px;">
+                    <p style="font-size: 0.6rem; color: #444;">ACADEMIC FEES</p>
+                    <p style="font-size: 1.1rem; color: ${isPaid ? 'var(--accent)' : '#fff'}">
+                        ₹${parseInt(monthlyFees).toLocaleString('en-IN')}
+                    </p>
+                </div>
+
+                <button class="pay-btn" onclick="toggleFee('${s.id}', '${s.name}', ${monthlyFees})">
+                    ${isPaid ? 'REVOKE PAYMENT' : 'MARK AS PAID'}
+                </button>
+            </div>
+        `;
+    }).join('');
+}
+
+//         function toggleFee(id, name) {
+//     // 1. Pehle status check karo
+//     const wasPaid = feesStatus[id] === 'Paid';
+//     feesStatus[id] = wasPaid ? 'Pending' : 'Paid';
+//     localStorage.setItem('feesDB', JSON.stringify(feesStatus));
+
+//     let transactions = JSON.parse(localStorage.getItem("financeDB")) || [];
+//     let currentRev = parseInt(localStorage.getItem("totalRevenue")?.replace(/,/g, '') || 0);
+
+//     if (!wasPaid) {
+//         // --- PAID LOGIC (Nayi entry add hogi) ---
+//         transactions.push({
+//             id: "FEE-" + id, // Unique ID takki baad me delete ho sake
+//             date: new Date().toISOString().split('T')[0],
+//             desc: "Fees Collected: " + name,
+//             category: 'Income',
+//             amount: 50000
+//         });
+//         currentRev += 50000;
+//     } else {
+//         // --- REVOKE LOGIC (Finance Ledger se entry hatana) ---
+//         // Wahi entry delete karo jo is student ki ID se match ho
+//         transactions = transactions.filter(t => t.desc !== "Fees Collected: " + name);
+//         currentRev -= 50000;
+//     }
+
+//     // 2. Final Data Save
+//     localStorage.setItem("financeDB", JSON.stringify(transactions));
+//     localStorage.setItem("totalRevenue", currentRev.toLocaleString('en-IN'));
+    
+//     renderFees(); // UI Refresh
+// }
+
+
+function toggleFee(id, name, amount) {
+    const wasPaid = feesStatus[id] === 'Paid';
+    feesStatus[id] = wasPaid ? 'Pending' : 'Paid';
+    localStorage.setItem('feesDB', JSON.stringify(feesStatus));
+
+    let transactions = JSON.parse(localStorage.getItem("financeDB")) || [];
+    let currentRev = parseInt(localStorage.getItem("totalRevenue")?.replace(/,/g, '') || 0);
+
+    if (!wasPaid) {
+        transactions.push({
+            id: "FEE-" + id + "-" + Date.now(), 
+            date: new Date().toISOString().split('T')[0],
+            desc: "Fees Collected: " + name,
+            category: 'Income',
+            amount: amount
+        });
+        currentRev += parseInt(amount);
+    } else {
+        transactions = transactions.filter(t => t.desc !== "Fees Collected: " + name);
+        currentRev -= parseInt(amount);
+    }
+
+    localStorage.setItem("financeDB", JSON.stringify(transactions));
+    localStorage.setItem("totalRevenue", currentRev.toLocaleString('en-IN'));
+    
+    renderFees(); // UI Refresh
+}
+        // Navigation Toggle
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('closed');
+        document.getElementById('mainContent').classList.toggle('full');
+
+        const topBar = document.getElementById('topBar');
+        if(topBar) topBar.classList.toggle('expanded');
+    }
+
+        window.onload = renderFees;
+    </script>
+</body>
+</html>

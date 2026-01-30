@@ -1,0 +1,509 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A//OS - Attendance Terminal</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #111; --accent: #bc13fe; 
+            --text: #fff; --border: #222; --font-mono: 'Space Mono', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@700;800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-mono); display: flex; min-height: 100vh; overflow-x: hidden; }
+
+        .menu-toggle { 
+            display: none; position: fixed; top: 20px; left: 20px; 
+            background: var(--accent); color: #fff; border: none; 
+            padding: 10px 15px; font-weight: bold; cursor: pointer; 
+            z-index: 1100; font-family: var(--font-mono);
+        }
+
+        .close-btn-sidebar {
+            display: none; background: transparent; color: var(--accent);
+            border: 1px solid var(--accent); padding: 5px 10px; cursor: pointer;
+            margin-bottom: 2rem; align-self: flex-end;
+        }
+
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; height: 100vh; background: var(--bg); z-index: 1000; 
+            display: flex; flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.77, 0, 0.175, 1); 
+        }
+        .logo { font-family: 'Syne', sans-serif; font-size: 2rem; color: var(--accent); margin-bottom: 3rem; letter-spacing: -2px; }
+        .nav-links li { list-style: none; margin: 1.5rem 0; font-weight: bold; text-transform: uppercase; }
+        .nav-links a { text-decoration: none; color: #666; transition: 0.3s; }
+        .nav-links li.active a, .nav-links a:hover { color: var(--accent); }
+
+        .content { flex: 1; margin-left: 260px; padding: 4rem; transition: 0.4s; }
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        h1 { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem); }
+
+        .att-card { background: var(--surface); border: 1px solid var(--border); padding: 2rem; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: #555; padding-bottom: 15px; border-bottom: 1px solid var(--border); font-size: 0.7rem; text-transform: uppercase; }
+        td { padding: 15px 0; border-bottom: 1px solid #1a1a1a; font-size: 0.9rem; }
+
+        .save-btn { 
+            background: var(--accent); color: #fff; border: none; 
+            padding: 15px; font-weight: bold; cursor: pointer; 
+            width: 100%; margin-top: 20px; text-transform: uppercase;
+            font-family: var(--font-mono); transition: 0.3s;
+        }
+        .save-btn:hover { opacity: 0.8; transform: translateY(-2px); }
+
+        input[type="checkbox"] { transform: scale(1.5); accent-color: var(--accent); cursor: pointer; }
+
+        @media (max-width: 768px) {
+            .menu-toggle, .close-btn-sidebar { display: block; }
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .content { margin-left: 0; padding: 6rem 1.5rem 2rem; }
+            .header-flex { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="menu-toggle" id="menuOpen">MENU ☰</button>
+
+    <nav class="sidebar" id="sidebar">
+        <button class="close-btn-sidebar" id="menuClose">CLOSE ×</button>
+        <div class="logo">A//OS</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li><a href="students.html">Students</a></li>
+            <li><a href="faculty.html">Faculty</a></li>
+            <li><a href="finances.html">Finances</a></li>
+            <li class="active"><a href="attendance.html">Attendance</a></li>
+        </ul>
+    </nav>
+
+    <main class="content">
+        <div class="header-flex">
+            <h1>Attendance</h1>
+            <p style="color: var(--accent); font-weight: bold;">// SESSION: <span id="displayDate"></span></p>
+        </div>
+
+        <div class="att-card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>STUDENT NAME</th>
+                        <th>GRADE</th>
+                        <th>PRESENT</th>
+                    </tr>
+                </thead>
+                <tbody id="att-list"></tbody>
+            </table>
+            <button class="save-btn" onclick="processAttendance()">INITIALIZE ATTENDANCE</button>
+            <p id="noDataMsg" style="display:none; text-align:center; padding:2rem; color:#555;">
+                NO STUDENT DATA FOUND. <br>
+                <button onclick="injectSampleData()" style="background:none; border:1px solid #333; color:var(--accent); padding:5px 10px; margin-top:10px; cursor:pointer;">INJECT SAMPLE DATA?</button>
+            </p>
+        </div>
+    </main>
+
+    <script>
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('sidebar');
+        document.getElementById('menuOpen').onclick = () => sidebar.classList.add('active');
+        document.getElementById('menuClose').onclick = () => sidebar.classList.remove('active');
+
+        // Display Current Date
+        document.getElementById('displayDate').innerText = new Date().toLocaleDateString('en-IN');
+
+        // 1. Fetch Students from LocalStorage
+        let students = JSON.parse(localStorage.getItem("studentDB")) || [];
+
+        function loadAtt() {
+            const list = document.getElementById('att-list');
+            const noDataMsg = document.getElementById('noDataMsg');
+            
+            if(students.length === 0) {
+                list.innerHTML = "";
+                noDataMsg.style.display = "block";
+                return;
+            }
+
+            noDataMsg.style.display = "none";
+            list.innerHTML = students.map(s => `
+                <tr>
+                    <td style="font-weight:bold">${s.name}</td>
+                    <td style="color: #666">${s.grade}</td>
+                    <td><input type="checkbox" class="att-box" checked></td>
+                </tr>
+            `).join('');
+        }
+
+        // 2. Sample Data Injector (Testing ke liye)
+        function injectSampleData() {
+            const samples = [
+                {id: "S-101", name: "Aryan Sharma", grade: "10th"},
+                {id: "S-102", name: "Ishita Verma", grade: "12th"},
+                {id: "S-103", name: "Rahul Kumar", grade: "11th"}
+            ];
+            localStorage.setItem("studentDB", JSON.stringify(samples));
+            location.reload(); // Page refresh karke data dikhayega
+        }
+
+        // 3. Process and Save History
+        function processAttendance() {
+            let todayObj = new Date();
+            let dayName = todayObj.toLocaleDateString('en-IN', { weekday: 'short' });
+
+            if (dayName === "Sun") {
+                alert("Today is Sunday.");
+                return;
+            }
+
+            const boxes = document.querySelectorAll('.att-box');
+            let present = 0;
+            boxes.forEach(b => { if(b.checked) present++; });
+
+            let percent = students.length > 0 ? Math.round((present / students.length) * 100) : 0;
+            
+            let history = JSON.parse(localStorage.getItem("attHistory")) || [];
+            let existingDayIndex = history.findIndex(item => item.day === dayName);
+            
+            if(existingDayIndex !== -1) {
+                history[existingDayIndex].value = percent;
+            } else {
+                history.push({ day: dayName, value: percent });
+            }
+
+            if(history.length > 6) history.shift(); // Mon-Sat (6 days)
+
+            localStorage.setItem("attHistory", JSON.stringify(history));
+            localStorage.setItem("attendanceRate", percent);
+            alert("✓ Attendance Recorded: " + percent + "%");
+            window.location.href = "dashboard.html";
+        }
+
+        // CRITICAL: Function ko call karna zaroori hai
+        window.onload = loadAtt;
+
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A//OS - Attendance Terminal</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #0a0a0a; --accent: #bc13fe; 
+            --text: #fff; --border: #1a1a1a; --font-mono: 'Space Mono', monospace;
+            --absent: #ff0055;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@700;800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-mono); display: flex; min-height: 100vh; overflow-x: hidden; }
+
+        /* Sidebar Sync */
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; height: 100vh; background: var(--bg); z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.closed { transform: translateX(-260px); }
+
+        .logo { font-family: 'Syne'; font-size: 2.2rem; color: var(--accent); margin-bottom: 3rem; letter-spacing: -2px; }
+        .nav-links li { list-style: none; margin: 1.5rem 0; font-weight: bold; text-transform: uppercase; font-size: 1rem; }
+        .nav-links a { text-decoration: none; color: #444; transition: 0.3s; }
+        .nav-links li.active a, .nav-links a:hover { color: var(--accent); }
+
+        /* Content Area */
+        .content { flex: 1; margin-left: 260px; padding: 40px; transition: margin-left 0.3s ease; }
+        .content.full { margin-left: 0; }
+        .header-section { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem; }
+        h1 { font-family: 'Syne'; font-size: 3.5rem; letter-spacing: -2px; line-height: 1; }
+
+        .att-card { background: var(--surface); border: 1px solid var(--border); padding: 2rem; position: relative; }
+        .att-card::before { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--accent); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th { text-align: left; color: #444; padding-bottom: 15px; border-bottom: 1px solid var(--border); font-size: 0.6rem; letter-spacing: 2px; }
+        td { padding: 15px 0; border-bottom: 1px solid #111; font-size: 0.85rem; }
+
+        /* Custom Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #222; transition: .4s; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(20px); background-color: #000; }
+
+        .save-btn { 
+            background: var(--accent); color: #000; border: none; 
+            padding: 20px; font-weight: bold; cursor: pointer; 
+            width: 100%; margin-top: 30px; text-transform: uppercase;
+            font-family: var(--font-mono); transition: 0.3s; letter-spacing: 2px;
+        }
+        .save-btn:hover { box-shadow: 0 0 10px var(--accent); transform: translateY(-2px); }
+
+        #noDataMsg { text-align: center; padding: 3rem; color: #444; border: 1px dashed var(--border); margin-top: 20px; }
+
+        .toggle-btn { position: fixed; bottom: 20px; left: 20px; z-index: 1100; background: var(--accent); border: none; padding: 10px; cursor: pointer; font-weight: bold; font-family: var(--font-mono); }
+
+    </style>
+</head>
+<body>
+
+    <button class="toggle-btn" onclick="toggleMenu()">MENU</button>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="logo">A//OS</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li class="active"><a href="attendance.html">Attendance</a></li>
+        </ul>
+    </nav>
+
+    <main class="content" id="mainContent">
+        <div class="header-section">
+            <div>
+                <p style="color: var(--accent); font-size: 0.7rem; letter-spacing: 3px; margin-bottom: 10px;">// SYSTEM STATUS: ONLINE</p>
+                <h1>ATTENDANCE</h1>
+            </div>
+            <div style="text-align: right;">
+                <p style="color: #444; font-size: 0.6rem; letter-spacing: 1px;">CURRENT SESSION</p>
+                <h2 id="displayDate" style="font-family: 'Syne'; color: var(--text);"></h2>
+            </div>
+        </div>
+
+        <div class="att-card">
+            <table id="attTable">
+                <thead>
+                    <tr>
+                        <th>STUDENT NAME</th>
+                        <th>CLASS/GRADE</th>
+                        <th style="text-align: right;">STATUS (P/A)</th>
+                    </tr>
+                </thead>
+                <tbody id="att-list"></tbody>
+            </table>
+
+            <div id="noDataMsg" style="display:none;">
+                <p>DATABASE EMPTY: NO STUDENT RECORDS FOUND</p>
+                <button onclick="injectSampleData()" style="background:none; border:1px solid #333; color:var(--accent); padding:10px 20px; margin-top:20px; cursor:pointer; font-family:var(--font-mono); font-size:0.7rem;">+ INJECT TEST DATA</button>
+            </div>
+
+            <button class="save-btn" id="saveBtn" onclick="processAttendance()">FINALIZE & SYNC TO DASHBOARD</button>
+        </div>
+    </main>
+
+    <!-- <script>
+        // Set Current Date
+        document.getElementById('displayDate').innerText = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+
+        // 1. Fetch Students from Global DB
+        let students = JSON.parse(localStorage.getItem("studentDB")) || [];
+
+        function loadAtt() {
+            const list = document.getElementById('att-list');
+            const noDataMsg = document.getElementById('noDataMsg');
+            const saveBtn = document.getElementById('saveBtn');
+            const table = document.getElementById('attTable');
+            
+            if(students.length === 0) {
+                table.style.display = "none";
+                noDataMsg.style.display = "block";
+                saveBtn.style.display = "none";
+                return;
+            }
+
+            list.innerHTML = students.map((s, i) => `
+                <tr>
+                    <td style="font-weight:bold; letter-spacing: -0.5px;">${s.name.toUpperCase()}</td>
+                    <td style="color: #666; font-size: 0.7rem;">${s.class || s.grade || 'N/A'}</td>
+                    <td style="text-align: right;">
+                        <label class="switch">
+                            <input type="checkbox" class="att-box" checked id="check-${i}">
+                            <span class="slider"></span>
+                        </label>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 2. Sample Data for Testing
+        function injectSampleData() {
+            const samples = [
+                {name: "Avish Saluja", class: "Grade X-A"},
+                {name: "Sam Kumar", class: "Grade X-A"},
+                {name: "Vikram Singh", class: "Grade X-A"},
+                {name: "Anjali Sharma", class: "Grade X-B"}
+            ];
+            localStorage.setItem("studentDB", JSON.stringify(samples));
+            location.reload();
+        }
+
+        // 3. Process Live Attendance & Sync
+        function processAttendance() {
+            const boxes = document.querySelectorAll('.att-box');
+            let presentCount = 0;
+            let attendanceRecords = [];
+            const today = new Date().toLocaleDateString('en-GB');
+
+            boxes.forEach((box, index) => {
+                const isPresent = box.checked;
+                if(isPresent) presentCount++;
+                
+                // Detailed record for history
+                attendanceRecords.push({
+                    date: today,
+                    name: students[index].name,
+                    class: students[index].class || students[index].grade,
+                    status: isPresent ? 'Present' : 'Absent'
+                });
+            });
+
+            // Calculate Percentage
+            let percent = Math.round((presentCount / students.length) * 100);
+            
+            // SAVE TO SHARED STORAGE
+            localStorage.setItem("attendanceRate", percent); 
+            
+            // Push to History (Append to existing logs)
+            let existingHistory = JSON.parse(localStorage.getItem("attendanceDB")) || [];
+            let updatedHistory = [...existingHistory, ...attendanceRecords];
+            localStorage.setItem("attendanceDB", JSON.stringify(updatedHistory));
+
+            alert("✓ SYNC COMPLETE: " + percent + "% ATTENDANCE RECORDED");
+            window.location.href = "dashboard.html"; // Auto-redirect to see changes
+        }
+
+        window.onload = loadAtt;
+            // Navigation Toggle
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('closed');
+        document.getElementById('mainContent').classList.toggle('full');
+
+        const topBar = document.getElementById('topBar');
+        if(topBar) topBar.classList.toggle('expanded');
+    }
+    </script> -->
+    <script>
+    // Set Current Date
+    document.getElementById('displayDate').innerText = new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase();
+
+    // 1. Fetch Students from Global DB
+    let students = JSON.parse(localStorage.getItem("studentDB")) || [];
+
+    function loadAtt() {
+        const list = document.getElementById('att-list');
+        const noDataMsg = document.getElementById('noDataMsg');
+        const saveBtn = document.getElementById('saveBtn');
+        const table = document.getElementById('attTable');
+        
+        if(students.length === 0) {
+            table.style.display = "none";
+            noDataMsg.style.display = "block";
+            saveBtn.style.display = "none";
+            return;
+        }
+
+        list.innerHTML = students.map((s, i) => `
+            <tr>
+                <td style="font-weight:bold; letter-spacing: -0.5px;">${s.name.toUpperCase()}</td>
+                <td style="color: #666; font-size: 0.7rem;">${s.class || s.grade || 'N/A'}</td>
+                <td style="text-align: right;">
+                    <label class="switch">
+                        <input type="checkbox" class="att-box" checked id="check-${i}">
+                        <span class="slider"></span>
+                    </label>
+                </td>
+            </tr>
+        `).join('');
+    }
+
+    // 2. Sample Data for Testing
+    function injectSampleData() {
+        const samples = [
+            {name: "Avish Saluja", class: "Grade X-A"},
+            {name: "Sam Kumar", class: "Grade X-A"},
+            {name: "Vikram Singh", class: "Grade X-A"},
+            {name: "Anjali Sharma", class: "Grade X-B"}
+        ];
+        localStorage.setItem("studentDB", JSON.stringify(samples));
+        location.reload();
+    }
+
+    // 3. Process Live Attendance & Sync
+    function processAttendance() {
+        const boxes = document.querySelectorAll('.att-box');
+        let presentCount = 0;
+        let attendanceRecords = [];
+        const today = new Date().toLocaleDateString('en-GB');
+
+        boxes.forEach((box, index) => {
+            const isPresent = box.checked;
+            if(isPresent) presentCount++;
+            
+            // Detailed record logic
+            attendanceRecords.push({
+                date: today,
+                name: students[index].name,
+                class: students[index].class || students[index].grade,
+                status: isPresent ? 'Present' : 'Absent'
+            });
+        });
+
+        // 4. Calculate Percentage
+        let percent = Math.round((presentCount / students.length) * 100);
+        
+        // Dashboard Stats ke liye (Current Rate)
+        localStorage.setItem("attendanceRate", percent); 
+        
+        // Sync with Dashboard Average (Current Session Only)
+        localStorage.setItem("attendanceDB", JSON.stringify(attendanceRecords));
+
+        // 5. Update Weekly Graph History
+        updateWeeklyHistory(percent);
+
+        alert("✓ SYNC COMPLETE: " + percent + "% ATTENDANCE RECORDED");
+        window.location.href = "dashboard.html"; // Auto-redirect
+    }
+
+    // Graph History Helper
+    function updateWeeklyHistory(percent) {
+        const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const todayName = days[new Date().getDay()];
+        
+        if(todayName === "Sun") return;
+
+        let history = JSON.parse(localStorage.getItem("attHistory")) || [
+            { day: "Mon", value: 0 }, { day: "Tue", value: 0 }, { day: "Wed", value: 0 },
+            { day: "Thu", value: 0 }, { day: "Fri", value: 0 }, { day: "Sat", value: 0 }
+        ];
+
+        
+        history = history.map(item => {
+            if (item.day === todayName) {
+                return { ...item, value: percent };
+            }
+            return item;
+        });
+
+        localStorage.setItem("attHistory", JSON.stringify(history));
+    }
+
+    window.onload = loadAtt;
+
+    function toggleMenu() {
+        document.getElementById('sidebar').classList.toggle('closed');
+        document.getElementById('mainContent').classList.toggle('full');
+        const topBar = document.getElementById('topBar');
+        if(topBar) topBar.classList.toggle('expanded');
+    }
+</script>
+</body>
+</html>
