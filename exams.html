@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -63,6 +63,11 @@
 
     <main class="content" id="mainContent">
         <h1 style="font-family: 'Syne'; font-size: 3rem; margin-bottom: 30px;">EXAMINATION PORTAL</h1>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+    <button onclick="openMarksModal()" class="pay-btn" style="background: var(--accent); color: #000;">
+        + NEW MARKS ENTRY
+    </button>
+        </div>
 
         <div class="exam-header">
             <div class="exam-stat"><small>CURRENT SESSION</small><h3>TERM-1 2026</h3></div>
@@ -151,6 +156,540 @@
         const topBar = document.getElementById('topBar');
         if(topBar) topBar.classList.toggle('expanded');
     }
+    </script>
+</body>
+</html> -->
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A//OS - Examination Portal</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #0a0a0a; --accent: #08f884; 
+            --border: #1a1a1a; --font-mono: 'Space Mono', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: var(--font-mono); display: flex; overflow-x: hidden; }
+
+        /* Sidebar & Layout */
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; height: 100vh; background: var(--bg); z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.closed { transform: translateX(-260px); }
+        .sidebar ul li a:hover {
+            color: var(--accent) !important;
+        }
+        .content { flex: 1; margin-left: 260px; padding: 40px; transition: margin-left 0.3s ease; }
+        .content.full { margin-left: 0; }
+
+        /* Directory Style Header */
+        .dir-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+        .dir-title { font-family: 'Syne'; font-size: 3.5rem; letter-spacing: -2px; text-transform: uppercase; }
+        .new-entry-btn { background: transparent; color: #fff; border: 1px solid #08f884; color: #08f884; padding: 15px 30px; font-weight: bold; cursor: pointer; font-family: 'Syne'; }
+        .new-entry-btn:hover { box-shadow: 0 0 10px var(--accent); }
+
+        /* KPI Stats */
+        .exam-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 40px; }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-left: 4px solid var(--accent); }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; background: var(--surface); }
+        th { text-align: left; padding: 15px; border-bottom: 1px solid var(--border); color: var(--accent); font-size: 0.7rem; text-transform: uppercase; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: #0a0a0a; border: 1px solid #333; padding: 40px; width: 500px; position: relative; }
+        .neon-input { width: 100%; background: #111; border: 1px solid #333; padding: 12px; color: #fff; margin-bottom: 15px; font-family: var(--font-mono); }
+        
+        .report-card { background: #fff; color: #000; padding: 40px; width: 100%; font-family: 'Courier New', monospace; }
+        @media print { .no-print { display: none; } body { background: #fff; } }
+
+        .toggle-btn { position: fixed; bottom: 20px; left: 20px; z-index: 1100; background: var(--accent); border: none; padding: 10px; cursor: pointer; font-weight: bold; font-family: var(--font-mono); }
+    </style>
+</head>
+<body>
+
+    <button class="toggle-btn" onclick="toggleMenu()">MENU</button>
+
+    <nav class="sidebar" id="sidebar">
+        <div style="font-family: 'Syne'; font-size: 2rem; color: var(--accent); margin-bottom: 2rem;">A//OS</div>
+        <ul style="list-style: none;">
+            <li style="margin: 1rem 0;"><a href="dashboard.html" style="color: #444; text-decoration: none;">DASHBOARD</a></li>
+            <li style="margin: 1rem 0;"><a href="exams.html" style="color: var(--accent); text-decoration: none;">EXAMS</a></li>
+        </ul>
+    </nav>
+
+    <main class="content" id="mainContent">
+        <div class="dir-header">
+            <h1 class="dir-title">EXAMINATION</h1>
+            <div style="display: flex; gap: 10px;">
+                <button onclick="localStorage.removeItem('examDB'); location.reload();" class="new-entry-btn" style="background: transparent; border: 1px solid #08f884; color: #08f884;">CLEAR ALL</button>
+                <button onclick="openMarksModal()" class="new-entry-btn">+ NEW ENTRY</button>
+            </div>
+        </div>
+
+        <div class="exam-stats">
+            <div class="stat-card"><small>SESSION</small><h3>TERM-1 2026</h3></div>
+            <div class="stat-card"><small>AVG SCORE</small><h3 id="avgScore">0%</h3></div>
+            <div class="stat-card"><small>TOTAL RECORDS</small><h3 id="totalRecords">0</h3></div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>STUDENT ID</th>
+                    <th>NAME</th>
+                    <th>TOTAL MARKS</th>
+                    <th>PERCENTAGE</th>
+                    <th>ACTION</th>
+                </tr>
+            </thead>
+            <tbody id="resultsList"></tbody>
+        </table>
+    </main>
+
+    <div id="marksModal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeMarksModal()" style="position: absolute; right: 20px; top: 20px; cursor: pointer; color: #ff4444;">[ CLOSE ]</span>
+            <h2 style="font-family: 'Syne'; margin-bottom: 20px; color: var(--accent);">NEW MARKS ENTRY</h2>
+            
+            <input type="text" id="exID" placeholder="STUDENT ID (STU-001)" class="neon-input">
+            <input type="text" id="exName" placeholder="STUDENT NAME" class="neon-input">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="number" id="exSci" placeholder="SCIENCE" class="neon-input">
+                <input type="number" id="exMath" placeholder="MATH" class="neon-input">
+                <input type="number" id="exSst" placeholder="SST" class="neon-input">
+                <input type="number" id="exEng" placeholder="ENGLISH" class="neon-input">
+                <input type="number" id="exHin" placeholder="HINDI" class="neon-input">
+            </div>
+
+            <button onclick="saveExamRecord()" style="width: 100%; padding: 15px; background: var(--accent); color: #000; border: none; font-weight: bold; cursor: pointer; margin-top: 10px;">SAVE TO DATABASE</button>
+        </div>
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content" style="background: #fff; width: 550px;">
+            <div class="report-card" id="printableReport">
+                <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px;">
+                    <h2 style="margin:0;">A//OS ACADEMIC REPORT</h2>
+                    <p style="font-size:0.8rem;">SESSION 2025-2026</p>
+                </div>
+                <p><strong>NAME:</strong> <span id="repName"></span></p>
+                <p><strong>ID:</strong> <span id="repId"></span></p>
+                <div style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">
+                    <p>SCIENCE: <strong id="repSci">0</strong>/100</p>
+                    <p>MATH: <strong id="repMath">0</strong>/100</p>
+                    <p>SST: <strong id="repSst">0</strong>/100</p>
+                    <p>ENGLISH: <strong id="repEng">0</strong>/100</p>
+                    <p>HINDI: <strong id="repHin">0</strong>/100</p>
+                </div>
+                <div style="background:#000; color:#fff; padding:15px; margin-top:20px; text-align:center;">
+                    <h3>PERCENTAGE: <span id="repPerc">0%</span></h3>
+                </div>
+            </div>
+            <button class="no-print" onclick="window.print()" style="width:100%; margin-top:20px; padding:10px; background:#000; color:#fff; border:none; cursor:pointer;">PRINT REPORT</button>
+            <button class="no-print" onclick="closeModal()" style="width:100%; margin-top:5px; background:none; border:none; color:#999; cursor:pointer;">[ CLOSE ]</button>
+        </div>
+    </div>
+
+    <script>
+        let examDB = JSON.parse(localStorage.getItem("examDB")) || [];
+
+        function openMarksModal() { document.getElementById('marksModal').style.display = 'flex'; }
+        function closeMarksModal() { document.getElementById('marksModal').style.display = 'none'; }
+        function closeModal() { document.getElementById('resultModal').style.display = 'none'; }
+
+        function saveExamRecord() {
+            const sci = parseInt(document.getElementById('exSci').value) || 0;
+            const math = parseInt(document.getElementById('exMath').value) || 0;
+            const sst = parseInt(document.getElementById('exSst').value) || 0;
+            const eng = parseInt(document.getElementById('exEng').value) || 0;
+            const hin = parseInt(document.getElementById('exHin').value) || 0;
+            
+            const total = sci + math + sst + eng + hin;
+            const perc = (total / 500 * 100).toFixed(1);
+
+            const record = {
+                id: document.getElementById('exID').value,
+                name: document.getElementById('exName').value,
+                sci, math, eng, hin, total, perc
+            };
+
+            if(!record.id || !record.name) return alert("Fill all details!");
+
+            examDB.push(record);
+            localStorage.setItem("examDB", JSON.stringify(examDB));
+            closeMarksModal();
+            renderExams();
+        }
+
+        function renderExams() {
+            const list = document.getElementById('resultsList');
+            list.innerHTML = examDB.map((r, i) => `
+                <tr>
+                    <td>${r.id}</td>
+                    <td>${r.name.toUpperCase()}</td>
+                    <td>${r.total}/500</td>
+                    <td style="color: var(--accent); font-weight:bold;">${r.perc}%</td>
+                    <td><button class="btn-view" style="border:1px solid var(--accent); color:var(--accent); background:none; cursor:pointer; padding:5px 10px;" onclick="showReport(${i})">REPORT</button></td>
+                    <td><button class="btn-view" style="border:1px solid var(--accent); color:var(--accent); background:none; cursor:pointer; padding:5px 10px;" onclick="editMarks(${i})">EDIT</button></td>
+                    <td><button class="btn-view" style="border:1px solid var(--accent); color:var(--accent); background:none; cursor:pointer; padding:5px 10px;"  onclick="deleteMarks(${i})">DEL</button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('totalRecords').innerText = examDB.length;
+            const avg = examDB.reduce((acc, curr) => acc + parseFloat(curr.perc), 0) / (examDB.length || 1);
+            document.getElementById('avgScore').innerText = avg.toFixed(1) + "%";
+        }
+
+        function showReport(index) {
+            const r = examDB[index];
+            document.getElementById('repName').innerText = r.name.toUpperCase();
+            document.getElementById('repId').innerText = r.id;
+            document.getElementById('repSci').innerText = r.sci;
+            document.getElementById('repMath').innerText = r.math;
+            document.getElementById('repSst').innerText = r.sst;
+            document.getElementById('repEng').innerText = r.eng;
+            document.getElementById('repHin').innerText = r.hin;
+            document.getElementById('repPerc').innerText = r.perc + "%";
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        // 1. Delete Logic
+function deleteMarks(index) {
+    if(confirm("Are you sure to delete this record?")) {
+        examDB.splice(index, 1); // Array se hatana
+        localStorage.setItem("examDB", JSON.stringify(examDB)); // Database update
+        renderExams(); // UI refresh
+    }
+}
+
+// 2. Edit Logic
+function editMarks(index) {
+    const r = examDB[index];
+    
+    // Modal mein purana data bharna
+    document.getElementById('exID').value = r.id;
+    document.getElementById('exName').value = r.name;
+    document.getElementById('exSci').value = r.sci;
+    document.getElementById('exMath').value = r.math;
+    document.getElementById('exSst').value = r.sst;
+    document.getElementById('exEng').value = r.eng;
+    document.getElementById('exHin').value = r.hin;
+
+    // Save button ka behavior badalna taaki naya add na ho, purana update ho
+    const saveBtn = document.querySelector('.modal-content button');
+    saveBtn.onclick = function() {
+        // Update data
+        r.id = document.getElementById('exID').value;
+        r.name = document.getElementById('exName').value;
+        r.sci = parseInt(document.getElementById('exSci').value) || 0;
+        r.math = parseInt(document.getElementById('exMath').value) || 0;
+        r.sst = parseInt(document.getElementById('exSst').value) || 0;
+        r.eng = parseInt(document.getElementById('exEng').value) || 0;
+        r.hin = parseInt(document.getElementById('exHin').value) || 0;
+        
+        r.total = r.sci + r.math + r.sst + r.eng + r.hin;
+        r.perc = (r.total / 500 * 100).toFixed(1);
+
+        localStorage.setItem("examDB", JSON.stringify(examDB));
+        closeMarksModal();
+        renderExams();
+        
+        // Reset save button for new entries
+        saveBtn.onclick = saveExamRecord;
+    };
+
+    openMarksModal();
+}
+
+        // Navigation Toggle
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('closed');
+            document.getElementById('mainContent').classList.toggle('full');
+
+            const topBar = document.getElementById('topBar');
+            if(topBar) topBar.classList.toggle('expanded');
+        }
+
+        window.onload = renderExams;
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A//OS - Examination Portal</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #0a0a0a; --accent: #08f884; 
+            --border: #1a1a1a; --font-mono: 'Space Mono', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: var(--font-mono); display: flex; overflow-x: hidden; min-height: 100vh; }
+
+        /* --- Sidebar --- */
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; height: 100vh; background: var(--bg); z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        .sidebar.closed { transform: translateX(-260px); }
+        .logo { font-family: 'Syne'; font-size: 2.2rem; color: var(--accent); margin-bottom: 3rem; letter-spacing: -2px;}
+        .nav-links li { list-style: none; margin: 1.5rem 0; font-weight: bold; text-transform: uppercase; }
+        .nav-links a { text-decoration: none; color: #444; transition: 0.3s;}
+        .nav-links li.active a, .nav-links a:hover { color: var(--accent); }
+
+        /* --- Content Area --- */
+        .content { flex: 1; margin-left: 260px; padding: 40px; transition: margin-left 0.3s ease; }
+        .content.full { margin-left: 0; }
+
+        /* Directory Style Header */
+        .dir-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+        .dir-title { font-family: 'Syne'; font-size: 3.5rem; letter-spacing: -2px; text-transform: uppercase; }
+        .add-btn { background: var(--accent); color: #000; border: none; padding: 12px 24px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-family: 'Syne'; }
+        .add-btn:hover { box-shadow: 0 0 10px var(--accent); }
+
+        /* KPI Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; border-left: 4px solid var(--accent); }
+        .stat-card small { color: #555; font-size: 0.6rem; letter-spacing: 1px; }
+        .stat-card h3 { font-family: 'Syne'; font-size: 1.8rem; margin-top: 5px; color: var(--accent); }
+
+        /* Finance-Style Table */
+        .table-container { background: var(--surface); border: 1px solid var(--border); padding: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; color: #555; padding-bottom: 15px; border-bottom: 1px solid var(--border); font-size: 0.6rem; text-transform: uppercase; }
+        td { padding: 15px 0; border-bottom: 1px solid #111; font-size: 0.8rem; }
+        
+        /* Action Buttons */
+        .action-group { display: flex; gap: 8px; justify-content: flex-end; }
+        .btn-table { background: transparent; border: 1px solid #333; color: #888; padding: 5px 12px; cursor: pointer; font-size: 0.6rem; transition: 0.3s; }
+        .btn-table:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-del:hover { border-color: #ff4444; color: #ff4444; }
+
+        /* Modals */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--surface); padding: 3rem; border: 1px solid var(--border); width: 500px; border-top: 4px solid var(--accent); position: relative; }
+        .neon-input { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; color: #fff; margin-bottom: 1rem; outline: none; font-family: var(--font-mono); }
+        
+        .report-card { background: #fff; color: #000; padding: 40px; width: 100%; font-family: 'Courier New', monospace; }
+        @media print { .no-print { display: none; } body { background: #fff; } .sidebar, .add-btn, .toggle-btn { display: none; } }
+
+        .toggle-btn { position: fixed; bottom: 20px; left: 20px; z-index: 1100; background: var(--accent); border: none; padding: 10px; cursor: pointer; font-weight: bold; font-family: var(--font-mono); }
+    </style>
+</head>
+<body>
+
+    <button class="toggle-btn" onclick="toggleMenu()">MENU</button>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="logo">A//OS</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">Dashboard</a></li>
+            <li class="active"><a href="exams.html">Examination</a></li>
+        </ul>
+    </nav>
+
+    <main class="content" id="mainContent">
+        <div class="dir-header">
+            <h1 class="dir-title">EXAMINATION</h1>
+            <button class="add-btn" onclick="openMarksModal()">+ NEW ENTRY</button>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><small>CURRENT SESSION</small><h3>TERM-1 2026</h3></div>
+            <div class="stat-card"><small>AVG SCORE</small><h3 id="avgScore">0%</h3></div>
+            <div class="stat-card"><small>TOTAL RECORDS</small><h3 id="totalRecords">0</h3></div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>STUDENT ID</th>
+                        <th>NAME</th>
+                        <th>TOTAL MARKS</th>
+                        <th>PERCENTAGE</th>
+                        <th style="text-align: right;">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsList"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="marksModal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeMarksModal()" style="position: absolute; right: 20px; top: 20px; cursor: pointer; color: #ff4444;">[ CLOSE ]</span>
+            <h2 id="modalTitle" style="font-family: 'Syne'; margin-bottom: 20px; color: var(--accent);">NEW MARKS ENTRY</h2>
+            
+            <input type="text" id="exID" placeholder="STUDENT ID (e.g. STU-101)" class="neon-input">
+            <input type="text" id="exName" placeholder="STUDENT NAME" class="neon-input">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <input type="number" id="exSci" placeholder="SCIENCE" class="neon-input">
+                <input type="number" id="exMath" placeholder="MATH" class="neon-input">
+                <input type="number" id="exSst" placeholder="SST" class="neon-input">
+                <input type="number" id="exEng" placeholder="ENGLISH" class="neon-input">
+                <input type="number" id="exHin" placeholder="HINDI" class="neon-input">
+            </div>
+
+            <button onclick="saveExamRecord()" id="saveBtn" class="add-btn" style="width: 100%; margin-top: 10px;">SAVE TO DATABASE</button>
+        </div>
+    </div>
+
+    <div id="resultModal" class="modal">
+        <div class="modal-content" style="background: #fff; width: 550px; color: #000;">
+            <div class="report-card" id="printableReport">
+                <div style="text-align:center; border-bottom:2px solid #000; padding-bottom:10px; margin-bottom:20px;">
+                    <h2 style="margin:0;">A//OS ACADEMIC REPORT</h2>
+                    <p style="font-size:0.8rem;">SESSION 2025-2026</p>
+                </div>
+                <p><strong>NAME:</strong> <span id="repName"></span></p>
+                <p><strong>ID:</strong> <span id="repId"></span></p>
+                <div style="margin-top:20px; border-top:1px solid #eee; padding-top:10px;">
+                    <p style="display: flex; justify-content: space-between;"><span>SCIENCE:</span> <strong id="repSci">0</strong></p>
+                    <p style="display: flex; justify-content: space-between;"><span>MATH:</span> <strong id="repMath">0</strong></p>
+                    <p style="display: flex; justify-content: space-between;"><span>SST:</span> <strong id="repSst">0</strong></p>
+                    <p style="display: flex; justify-content: space-between;"><span>ENGLISH:</span> <strong id="repEng">0</strong></p>
+                    <p style="display: flex; justify-content: space-between;"><span>HINDI:</span> <strong id="repHin">0</strong></p>
+                </div>
+                <div style="background:#000; color:#fff; padding:15px; margin-top:20px; text-align:center;">
+                    <h3>PERCENTAGE: <span id="repPerc">0%</span></h3>
+                </div>
+            </div>
+            <button class="no-print" onclick="window.print()" class="add-btn" style="width:100%; margin-top:20px; background:#000;">PRINT REPORT</button>
+            <button class="no-print" onclick="closeModal()" style="width:100%; margin-top:5px; background:none; border:none; color:#999; cursor:pointer;">[ CLOSE ]</button>
+        </div>
+    </div>
+
+    <script>
+        let examDB = JSON.parse(localStorage.getItem("examDB")) || [];
+        let currentEditIndex = null;
+
+        function openMarksModal() {
+            document.getElementById('modalTitle').innerText = "NEW MARKS ENTRY";
+            document.getElementById('saveBtn').innerText = "SAVE TO DATABASE";
+            currentEditIndex = null;
+            document.getElementById('marksModal').style.display = 'flex';
+        }
+
+        function closeMarksModal() { 
+            document.getElementById('marksModal').style.display = 'none';
+            document.querySelectorAll('.neon-input').forEach(i => i.value = "");
+        }
+
+        function closeModal() { document.getElementById('resultModal').style.display = 'none'; }
+
+        function saveExamRecord() {
+            const sci = parseInt(document.getElementById('exSci').value) || 0;
+            const math = parseInt(document.getElementById('exMath').value) || 0;
+            const sst = parseInt(document.getElementById('exSst').value) || 0;
+            const eng = parseInt(document.getElementById('exEng').value) || 0;
+            const hin = parseInt(document.getElementById('exHin').value) || 0;
+            
+            const total = sci + math + sst + eng + hin;
+            const perc = (total / 500 * 100).toFixed(1);
+
+            const record = {
+                id: document.getElementById('exID').value,
+                name: document.getElementById('exName').value,
+                sci, math, sst, eng, hin, total, perc
+            };
+
+            if(!record.id || !record.name) return alert("Bhai details bharo!");
+
+            if(currentEditIndex !== null) {
+                examDB[currentEditIndex] = record;
+            } else {
+                examDB.push(record);
+            }
+
+            localStorage.setItem("examDB", JSON.stringify(examDB));
+            closeMarksModal();
+            renderExams();
+        }
+
+        function renderExams() {
+            const list = document.getElementById('resultsList');
+            list.innerHTML = examDB.map((r, i) => `
+                <tr class="fin-row">
+                    <td style="color: #666;">${r.id}</td>
+                    <td style="font-weight: bold; letter-spacing: 0.5px;">${r.name.toUpperCase()}</td>
+                    <td>${r.total}/500</td>
+                    <td style="color: var(--accent); font-weight:bold;">${r.perc}%</td>
+                    <td>
+                        <div class="action-group">
+                            <button class="btn-table" onclick="showReport(${i})">REPORT</button>
+                            <button class="btn-table" onclick="editMarks(${i})">EDIT</button>
+                            <button class="btn-table btn-del" onclick="deleteMarks(${i})">DEL</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.getElementById('totalRecords').innerText = examDB.length;
+            const avg = examDB.reduce((acc, curr) => acc + parseFloat(curr.perc), 0) / (examDB.length || 1);
+            document.getElementById('avgScore').innerText = avg.toFixed(1) + "%";
+        }
+
+        function showReport(index) {
+            const r = examDB[index];
+            document.getElementById('repName').innerText = r.name.toUpperCase();
+            document.getElementById('repId').innerText = r.id;
+            document.getElementById('repSci').innerText = r.sci;
+            document.getElementById('repMath').innerText = r.math;
+            document.getElementById('repSst').innerText = r.sst;
+            document.getElementById('repEng').innerText = r.eng;
+            document.getElementById('repHin').innerText = r.hin;
+            document.getElementById('repPerc').innerText = r.perc + "%";
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        function editMarks(index) {
+            const r = examDB[index];
+            currentEditIndex = index;
+            document.getElementById('modalTitle').innerText = "EDIT MARKS";
+            document.getElementById('saveBtn').innerText = "UPDATE RECORD";
+            
+            document.getElementById('exID').value = r.id;
+            document.getElementById('exName').value = r.name;
+            document.getElementById('exSci').value = r.sci;
+            document.getElementById('exMath').value = r.math;
+            document.getElementById('exSst').value = r.sst || 0;
+            document.getElementById('exEng').value = r.eng;
+            document.getElementById('exHin').value = r.hin;
+
+            document.getElementById('marksModal').style.display = 'flex';
+        }
+
+        function deleteMarks(index) {
+            if(confirm("Remove this exam record?")) {
+                examDB.splice(index, 1);
+                localStorage.setItem("examDB", JSON.stringify(examDB));
+                renderExams();
+            }
+        }
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('closed');
+            document.getElementById('mainContent').classList.toggle('full');
+        }
+
+        window.onload = renderExams;
     </script>
 </body>
 </html>
