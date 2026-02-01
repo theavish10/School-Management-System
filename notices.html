@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -32,7 +32,7 @@
         .notice-card h3 { font-family: 'Syne'; margin: 10px 0; font-size: 1.2rem; color: var(--accent); }
         
         /* Timetable Grid */
-        .tt-grid { display: grid; grid-template-columns: 100px repeat(5, 1fr); gap: 10px; background: var(--border); border: 1px solid var(--border); }
+        .tt-grid { display: grid; grid-template-columns: 100px repeat(6, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); }
         .tt-cell { background: var(--surface); padding: 15px; text-align: center; font-size: 0.7rem; border: 1px solid #111; }
         .tt-header { background: #000; color: var(--accent); font-weight: bold; }
         .subject { color: #fff; font-weight: bold; display: block; margin-bottom: 5px; }
@@ -83,20 +83,200 @@
             <div class="tt-cell tt-header">WED</div>
             <div class="tt-cell tt-header">THU</div>
             <div class="tt-cell tt-header">FRI</div>
+            <div class="tt-cell tt-header">SAT</div>
 
-            <div class="tt-cell">09:00 AM</div>
+            <div class="tt-cell">Period 1<br>08:00 to 08:45 AM</div>
             <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
-            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mrs. Roy</span></div>
-            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
-            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Ms. Khan</span></div>
-            <div class="tt-cell"><span class="subject">PHYSICS</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Ms. Khan</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
 
-            <div class="tt-cell">10:30 AM</div>
-            <div class="tt-cell"><span class="subject">HISTORY</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell">Period 2<br>08:45 to 09:30 AM</div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mr. Das</span></div>
             <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
             <div class="tt-cell"><span class="subject">IT</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 3<br>09:30 to 10:15 AM</div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Lunch<br>10:15 to 10:45 AM</div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+
+
+            <div class="tt-cell">Period 4<br>10:45 to 11:30 AM</div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 5<br>11:30 AM to 12:15 PM</div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">LIBRARY</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+
+            <div class="tt-cell">Period 6<br>12:15 to 01:00 PM</div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">A//OS BOT</span></div>
             <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mrs. Roy</span></div>
-            <div class="tt-cell"><span class="subject">LIBRARY</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">HALF DAY</span><span class="teacher">---</span></div>
+        </div>
+        <br>
+        <h2 style="font-family: 'Syne'; margin-bottom: 20px;">CLASS TIMETABLE (GRADE IX-A)</h2>
+        <div class="tt-grid">
+            <div class="tt-cell tt-header">TIME</div>
+            <div class="tt-cell tt-header">MON</div>
+            <div class="tt-cell tt-header">TUE</div>
+            <div class="tt-cell tt-header">WED</div>
+            <div class="tt-cell tt-header">THU</div>
+            <div class="tt-cell tt-header">FRI</div>
+            <div class="tt-cell tt-header">SAT</div>
+
+            <div class="tt-cell">Period 1<br>08:00 to 08:45 AM</div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Ms. Khan</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 2<br>08:45 to 09:30 AM</div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 3<br>09:30 to 10:15 AM</div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Lunch<br>10:15 to 10:45 AM</div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+
+
+            <div class="tt-cell">Period 4<br>10:45 to 11:30 AM</div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 5<br>11:30 AM to 12:15 PM</div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">LIBRARY</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+
+            <div class="tt-cell">Period 6<br>12:15 to 01:00 PM</div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">HALF DAY</span><span class="teacher">---</span></div>
+        </div>
+        <br>
+        <h2 style="font-family: 'Syne'; margin-bottom: 20px;">CLASS TIMETABLE (GRADE IIV-A)</h2>
+        <div class="tt-grid">
+            <div class="tt-cell tt-header">TIME</div>
+            <div class="tt-cell tt-header">MON</div>
+            <div class="tt-cell tt-header">TUE</div>
+            <div class="tt-cell tt-header">WED</div>
+            <div class="tt-cell tt-header">THU</div>
+            <div class="tt-cell tt-header">FRI</div>
+            <div class="tt-cell tt-header">SAT</div>
+
+            <div class="tt-cell">Period 1<br>08:00 to 08:45 AM</div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Ms. Khan</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 2<br>08:45 to 09:30 AM</div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 3<br>09:30 to 10:15 AM</div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Lunch<br>10:15 to 10:45 AM</div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+
+
+            <div class="tt-cell">Period 4<br>10:45 to 11:30 AM</div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 5<br>11:30 AM to 12:15 PM</div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">LIBRARY</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+
+            <div class="tt-cell">Period 6<br>12:15 to 01:00 PM</div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">HALF DAY</span><span class="teacher">---</span></div>
         </div>
     </main>
     <script>    // Navigation Toggle
@@ -107,6 +287,349 @@
         const topBar = document.getElementById('topBar');
         if(topBar) topBar.classList.toggle('expanded');
     }
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A//OS - Communication Hub</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #0a0a0a; --accent: #0bd912; 
+            --text: #fff; --border: #1a1a1a; --font-mono: 'Space Mono', monospace;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-mono); display: flex; overflow-x: hidden; }
+
+        /* Sidebar Styling */
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; height: 100vh; background: var(--bg); z-index: 1000;
+            transition: transform 0.3s ease; 
+        }
+        .sidebar.closed { transform: translateX(-260px); }
+        .logo { font-family: 'Syne'; font-size: 2rem; color: var(--accent); margin-bottom: 2rem; letter-spacing: -1px; }
+        .nav-links li { list-style: none; margin: 1.5rem 0; }
+        .nav-links a { text-decoration: none; color: #444; font-weight: bold; transition: 0.3s; }
+        .nav-links a:hover, .nav-links li.active a { color: var(--accent); }
+
+        /* Content Area */
+        .content { flex: 1; margin-left: 260px; padding: 40px; transition: margin-left 0.3s ease; }
+        .content.full { margin-left: 0; }
+
+        /* Notice Board */
+        .notice-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; margin-bottom: 50px; }
+        .notice-card { background: var(--surface); border: 1px solid var(--border); padding: 25px; border-top: 3px solid var(--accent); position: relative; }
+        .notice-card small { color: #555; font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; }
+        .notice-card h3 { font-family: 'Syne'; margin: 10px 0; font-size: 1.2rem; color: var(--accent); text-transform: uppercase; }
+        .del-notice { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #ff4444; cursor: pointer; font-size: 0.6rem; }
+
+        /* Timetable Grid */
+        .tt-grid { display: grid; grid-template-columns: 120px repeat(6, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); margin-bottom: 40px; }
+        .tt-cell { background: #050505; padding: 15px; text-align: center; font-size: 0.7rem; border: 1px solid #111; min-height: 80px; display: flex; flex-direction: column; justify-content: center; }
+        .tt-header { background: #000; color: var(--accent); font-weight: bold; font-family: 'Syne'; }
+        .subject { color: #fff; font-weight: bold; display: block; margin-bottom: 5px; font-size: 0.8rem; }
+        .teacher { color: #555; font-size: 0.6rem; }
+
+        /* Buttons & Modals */
+        .btn-post { background: var(--accent); color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; font-size: 0.7rem; }
+        .btn-post:hover { box-shadow: 0 0 10px var(--accent); }
+        
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--surface); padding: 30px; border: 1px solid var(--border); width: 450px; border-top: 4px solid #0bd912; }
+        .neon-input { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; color: #fff; margin-bottom: 15px; font-family: var(--font-mono); outline: none; }
+
+        .toggle-btn { position: fixed; bottom: 20px; left: 20px; z-index: 1100; background: var(--accent); border: none; padding: 10px; cursor: pointer; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <button class="toggle-btn" onclick="toggleMenu()">MENU</button>
+
+    <nav class="sidebar" id="sidebar">
+        <div class="logo">A//OS</div>
+        <ul class="nav-links">
+            <li><a href="dashboard.html">DASHBOARD</a></li>
+            <li class="active"><a href="notices.html">COMMUNICATION</a></li>
+            <li><a href="calendar.html">CALENDAR</a></li>
+        </ul>
+    </nav>
+
+    <main class="content" id="mainContent">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px;">
+            <h1 style="font-family: 'Syne'; font-size: 3.5rem; letter-spacing: -2px;">COMMUNICATION</h1>
+            <button class="btn-post" onclick="openNoticeModal()">+ POST ANNOUNCEMENT</button>
+        </div>
+
+        <div class="notice-container" id="noticeList"></div>
+
+        <h2 style="font-family: 'Syne'; margin-bottom: 20px;">CLASS TIMETABLE (GRADE X-A)</h2>
+        <div class="tt-grid">
+            <div class="tt-cell tt-header">TIME</div>
+            <div class="tt-cell tt-header">MON</div>
+            <div class="tt-cell tt-header">TUE</div>
+            <div class="tt-cell tt-header">WED</div>
+            <div class="tt-cell tt-header">THU</div>
+            <div class="tt-cell tt-header">FRI</div>
+            <div class="tt-cell tt-header">SAT</div>
+
+            <div class="tt-cell">Period 1<br>08:00 to 08:45 AM</div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Ms. Khan</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 2<br>08:45 to 09:30 AM</div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 3<br>09:30 to 10:15 AM</div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Lunch<br>10:15 to 10:45 AM</div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+
+
+            <div class="tt-cell">Period 4<br>10:45 to 11:30 AM</div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 5<br>11:30 AM to 12:15 PM</div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">LIBRARY</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+
+            <div class="tt-cell">Period 6<br>12:15 to 01:00 PM</div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">HALF DAY</span><span class="teacher">---</span></div>
+        </div>
+        <br>
+        <h2 style="font-family: 'Syne'; margin-bottom: 20px;">CLASS TIMETABLE (GRADE IX-A)</h2>
+        <div class="tt-grid">
+            <div class="tt-cell tt-header">TIME</div>
+            <div class="tt-cell tt-header">MON</div>
+            <div class="tt-cell tt-header">TUE</div>
+            <div class="tt-cell tt-header">WED</div>
+            <div class="tt-cell tt-header">THU</div>
+            <div class="tt-cell tt-header">FRI</div>
+            <div class="tt-cell tt-header">SAT</div>
+
+            <div class="tt-cell">Period 1<br>08:00 to 08:45 AM</div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Ms. Khan</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 2<br>08:45 to 09:30 AM</div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 3<br>09:30 to 10:15 AM</div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Lunch<br>10:15 to 10:45 AM</div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+
+
+            <div class="tt-cell">Period 4<br>10:45 to 11:30 AM</div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 5<br>11:30 AM to 12:15 PM</div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">LIBRARY</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+
+            <div class="tt-cell">Period 6<br>12:15 to 01:00 PM</div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">HALF DAY</span><span class="teacher">---</span></div>
+        </div>
+        <br>
+        <h2 style="font-family: 'Syne'; margin-bottom: 20px;">CLASS TIMETABLE (GRADE IIV-A)</h2>
+        <div class="tt-grid">
+            <div class="tt-cell tt-header">TIME</div>
+            <div class="tt-cell tt-header">MON</div>
+            <div class="tt-cell tt-header">TUE</div>
+            <div class="tt-cell tt-header">WED</div>
+            <div class="tt-cell tt-header">THU</div>
+            <div class="tt-cell tt-header">FRI</div>
+            <div class="tt-cell tt-header">SAT</div>
+
+            <div class="tt-cell">Period 1<br>08:00 to 08:45 AM</div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Ms. Khan</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 2<br>08:45 to 09:30 AM</div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 3<br>09:30 to 10:15 AM</div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Lunch<br>10:15 to 10:45 AM</div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+            <div class="tt-cell"><span class="subject"><br>---</span></div>
+
+
+            <div class="tt-cell">Period 4<br>10:45 to 11:30 AM</div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">ENGLISH</span><span class="teacher">---</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Dr. Rao</span></div>
+
+            <div class="tt-cell">Period 5<br>11:30 AM to 12:15 PM</div>
+            <div class="tt-cell"><span class="subject">HINDI</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">LIBRARY</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">LAB</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">---</span></div>
+
+            <div class="tt-cell">Period 6<br>12:15 to 01:00 PM</div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Das</span></div>
+            <div class="tt-cell"><span class="subject">IT</span><span class="teacher">Mr. Verma</span></div>
+            <div class="tt-cell"><span class="subject">SST</span><span class="teacher">A//OS BOT</span></div>
+            <div class="tt-cell"><span class="subject">SCIENCE</span><span class="teacher">Mrs. Roy</span></div>
+            <div class="tt-cell"><span class="subject">MATH</span><span class="teacher">Dr. Rao</span></div>
+            <div class="tt-cell"><span class="subject">HALF DAY</span><span class="teacher">---</span></div>
+        </div>
+    </main>
+
+    <div id="noticeModal" class="modal">
+        <div class="modal-content">
+            <h2 style="font-family: 'Syne'; margin-bottom: 20px; color: #0bd912;">NEW ANNOUNCEMENT</h2>
+            <input type="text" id="nTitle" placeholder="NOTICE TITLE" class="neon-input">
+            <textarea id="nBody" placeholder="MESSAGE..." class="neon-input" style="height: 120px; resize: none;"></textarea>
+            <button onclick="saveNotice()" class="btn-post" style="width: 100%;">PUBLISH NOTICE</button>
+            <button onclick="closeNoticeModal()" style="background:transparent; color:#555; border:none; margin-top:10px; cursor:pointer; width: 100%;">[ CANCEL ]</button>
+        </div>
+    </div>
+
+    <script>
+        let noticeDB = JSON.parse(localStorage.getItem("noticeDB")) || [];
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('closed');
+            document.getElementById('mainContent').classList.toggle('full');
+        }
+
+        function openNoticeModal() { document.getElementById('noticeModal').style.display = 'flex'; }
+        function closeNoticeModal() { document.getElementById('noticeModal').style.display = 'none'; }
+
+        function saveNotice() {
+            const title = document.getElementById('nTitle').value;
+            const body = document.getElementById('nBody').value;
+            const date = new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }).toUpperCase();
+
+            if(title && body) {
+                noticeDB.unshift({ title, body, date });
+                localStorage.setItem("noticeDB", JSON.stringify(noticeDB));
+                renderNotices();
+                closeNoticeModal();
+                document.getElementById('nTitle').value = "";
+                document.getElementById('nBody').value = "";
+            }
+        }
+
+        function renderNotices() {
+            const container = document.getElementById('noticeList');
+            container.innerHTML = noticeDB.map((n, i) => `
+                <div class="notice-card">
+                    <button class="del-notice" onclick="deleteNotice(${i})">[ DELETE ]</button>
+                    <small>${n.date} // UPDATE</small>
+                    <h3>${n.title}</h3>
+                    <p style="font-size: 0.8rem; color: #888;">${n.body}</p>
+                </div>
+            `).join('');
+        }
+
+        function deleteNotice(i) {
+            if(confirm("Delete the notice?")) {
+                noticeDB.splice(i, 1);
+                localStorage.setItem("noticeDB", JSON.stringify(noticeDB));
+                renderNotices();
+            }
+        }
+
+        window.onload = renderNotices;
     </script>
 </body>
 </html>
