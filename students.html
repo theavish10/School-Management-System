@@ -113,15 +113,30 @@
                 <!-- <button class="tab-btn" onclick="openTab(event, 'fees')">FEES</button> -->
             </div>
 
-            <div id="info" class="tab-body active">
+            <!-- <div id="info" class="tab-body active">
                 <p>CLASS: <span id="profClass"></span></p>
                 <p>JOINED: 2025-09-15</p> 
                 <p>CONTACT: +91 98XXX XXXXX</p>
                 <div id="editBtnArea" style="margin-top: 20px; border-top: 1px solid #111; padding-top: 20px;">
                     <button class="btn-action edit" id="mainEditBtn">EDIT THIS RECORD</button>
                 </div>
-            </div>
+            </div> -->
+<div id="editDetailsModal" class="modal" style="display:none; z-index: 3000;">
+    <div class="modal-content" style="max-width: 400px; border-top: 4px solid #00d4ff;">
+        <h2 style="font-family: 'Syne'; margin-bottom: 20px; color: #fff;">EDIT PROFILE INFO</h2>
+        
+        <label style="font-size: 0.7rem; color: #555;">JOINING DATE</label>
+        <input type="date" id="editJoinDate" class="neon-input">
 
+        <label style="font-size: 0.7rem; color: #555;">MOBILE NUMBER</label>
+        <input type="text" id="editContact" placeholder="+91 XXXXX XXXXX" class="neon-input">
+
+        <div style="margin-top: 20px; display: flex; gap: 10px;">
+            <button onclick="updateExtraDetails()" class="add-btn" style="background: #00d4ff; color: #000; flex: 1;">UPDATE</button>
+            <button onclick="closeEditDetails()" class="add-btn" style="flex: 1; background: transparent; border: 1px solid #333;">CANCEL</button>
+        </div>
+    </div>
+</div>
             <div id="attendance" class="tab-body">
                 <p>TOTAL SESSIONS: 45</p>
                 <p>PRESENT: 42</p>
@@ -224,6 +239,34 @@
             document.getElementById('studentModal').style.display = 'flex';
         }
 
+        function openEditDetails() {
+    const s = students[currentEditIndex];
+    document.getElementById('editJoinDate').value = s.joined || "2025-09-15";
+    document.getElementById('editContact').value = s.contact || "+91 98XXX XXXXX";
+    document.getElementById('editDetailsModal').style.display = 'flex';
+}
+
+function closeEditDetails() {
+    document.getElementById('editDetailsModal').style.display = 'none';
+}
+
+function updateExtraDetails() {
+    const newDate = document.getElementById('editJoinDate').value;
+    const newContact = document.getElementById('editContact').value;
+
+    if (currentEditIndex !== null) {
+        students[currentEditIndex].joined = newDate;
+        students[currentEditIndex].contact = newContact;
+
+        localStorage.setItem("studentDB", JSON.stringify(students));
+        
+        alert("✓ Extra Details Updated!");
+        closeEditDetails();
+        renderStudents(); // Main list refresh karein
+        // Purana profile view modal update karne ke liye use wapas load karein
+        viewProfile(currentEditIndex); 
+    }
+}
         // function saveStudent() {
         //     const id = document.getElementById('inputID').value;
         //     const name = document.getElementById('inputName').value;
@@ -243,21 +286,66 @@
         //     closeProfile();
         // }
 
-        function saveStudent() {
-    const id = document.getElementById('inputID').value;
-    const name = document.getElementById('inputName').value;
-    const className = document.getElementById('inputClass').value;
+//         function saveStudent() {
+//     const id = document.getElementById('inputID').value;
+//     const name = document.getElementById('inputName').value;
+//     const className = document.getElementById('inputClass').value;
     
-    // Naya: Monthly Fees input box se value lena
-    // Agar box khali hai toh default ₹2000 set ho jayega
+//     // Naya: Monthly Fees input box se value lena
+//     // Agar box khali hai toh default ₹2000 set ho jayega
+//     const feesVal = document.getElementById('inputFees').value;
+//     const monthlyFees = feesVal ? feesVal : 2000; 
+    
+//     const editIndex = document.getElementById('editIndex').value;
+
+//     if(!id || !name || !className) return alert("Please, fill all detail!");
+
+//     if(editIndex === "") {
+//         students.push({ 
+//             id: id, 
+//             name: name, 
+//             class: className, 
+//             fees: monthlyFees, 
+//             status: "Active" 
+//         });
+//     } else {
+//         students[editIndex].name = name;
+//         students[editIndex].class = className;
+//         students[editIndex].fees = monthlyFees;
+//     }
+
+//     renderStudents(); // List refresh karein
+//     closeProfile();   // Modal band karein
+    
+//     // Confirmation alert
+//     // alert(`✓ Record Saved! Monthly Fees: ₹${monthlyFees}`);
+// }
+
+function saveStudent() {
+    const id = document.getElementById('inputID').value.trim();
+    const name = document.getElementById('inputName').value.trim();
+    const className = document.getElementById('inputClass').value.trim();
+    
     const feesVal = document.getElementById('inputFees').value;
     const monthlyFees = feesVal ? feesVal : 2000; 
     
     const editIndex = document.getElementById('editIndex').value;
 
+    // Validation: Saari details bhari honi chahiye
     if(!id || !name || !className) return alert("Please, fill all detail!");
 
+    // --- UNIQUE ID CHECK START ---
+    // Check karein ki kya ye ID pehle se kisi student ki hai
+    const idExists = students.some((s, index) => s.id === id && index.toString() !== editIndex);
+
+    if(idExists) {
+        alert(`⚠️ Error: ID "${id}" already exists! Please enter a unique ID.`);
+        return; // Function ko yahi stop kar dein taaki duplicate save na ho
+    }
+    // --- UNIQUE ID CHECK END ---
+
     if(editIndex === "") {
+        // Naya student add karna
         students.push({ 
             id: id, 
             name: name, 
@@ -266,6 +354,8 @@
             status: "Active" 
         });
     } else {
+        // Purane student ko update karna
+        students[editIndex].id = id; // ID bhi update karne ka option de rahe hain
         students[editIndex].name = name;
         students[editIndex].class = className;
         students[editIndex].fees = monthlyFees;
@@ -274,8 +364,8 @@
     renderStudents(); // List refresh karein
     closeProfile();   // Modal band karein
     
-    // Confirmation alert
-    // alert(`✓ Record Saved! Monthly Fees: ₹${monthlyFees}`);
+    // Data ko LocalStorage mein save karna zaroori hai
+    localStorage.setItem("studentDB", JSON.stringify(students));
 }
 
         function deleteStudent(i) {
