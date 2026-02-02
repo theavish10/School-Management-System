@@ -176,9 +176,7 @@
         
         input, select { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; color: #fff; margin-bottom: 15px; font-family: var(--font-mono); }
         .save-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 15px; font-weight: bold; cursor: pointer; }
-
-        .close-x { position: absolute; top: 20px; right: 20px; color: #444; cursor: pointer; }
-
+        .close-btn { position: absolute; right: 20px; top: 20px; color: #ff0055 ; cursor: pointer; font-weight: bold; }
         .toggle-btn { position: fixed; bottom: 20px; left: 20px; z-index: 1100; background: var(--accent); border: none; padding: 10px; cursor: pointer; font-weight: bold; font-family: var(--font-mono); }
     </style>
 </head>
@@ -211,7 +209,7 @@
 
     <div id="facModal" class="modal">
         <div class="modal-content">
-            <span class="close-x" onclick="closeModal()">[ CLOSE ]</span>
+            <span class="close-btn" onclick="closeModal()">[ CLOSE ]</span>
             <h2 id="modalTitle" style="font-family: 'Syne'; margin-bottom: 25px;">NEW FACULTY ENTRY</h2>
             
             <input type="hidden" id="editIndex">
@@ -331,24 +329,66 @@
     //     closeModal();
     // }
 
-    function saveFaculty() {
-    const name = document.getElementById('inputName').value;
-    const roleTag = document.getElementById('inputRole').value;
-    const dept = document.getElementById('inputDept').value;
-    const exp = document.getElementById('inputExp').value;
-    const customId = document.getElementById('inputID').value;
-    // const salaryInput = document.getElementById('inputSalary').value;
-    // const salary = salaryInput ? salaryInput : 35000; 
-    // Naya: Salary box se value lena
+//     function saveFaculty() {
+//     const name = document.getElementById('inputName').value;
+//     const roleTag = document.getElementById('inputRole').value;
+//     const dept = document.getElementById('inputDept').value;
+//     const exp = document.getElementById('inputExp').value;
+//     const customId = document.getElementById('inputID').value;
+//     // const salaryInput = document.getElementById('inputSalary').value;
+//     // const salary = salaryInput ? salaryInput : 35000; 
+//     // Naya: Salary box se value lena
+//     const salaryVal = document.getElementById('inputSalary').value;
+//     const salary = salaryVal ? salaryVal : 35000;
+    
+//     const editIndex = document.getElementById('editIndex').value;
+
+//     if(!name || !dept) return alert("Please, fill all detail!");
+
+//     const facData = { 
+//         id: customId || ("FAC-" + Date.now()), 
+//         name: name, 
+//         role: roleTag, 
+//         dept: dept, 
+//         exp: exp,
+//         salary: salary 
+//     };
+
+//     if(editIndex === "") {
+//         facultyMembers.push(facData);
+//     } else {
+//         facultyMembers[editIndex] = facData;
+//     }
+
+//     renderFaculty(); 
+//     closeModal();
+// }
+
+function saveFaculty() {
+    const name = document.getElementById('inputName').value.trim();
+    const roleTag = document.getElementById('inputRole').value.trim();
+    const dept = document.getElementById('inputDept').value.trim();
+    const exp = document.getElementById('inputExp').value.trim();
+    const customId = document.getElementById('inputID').value.trim();
+    
     const salaryVal = document.getElementById('inputSalary').value;
     const salary = salaryVal ? salaryVal : 35000;
     
     const editIndex = document.getElementById('editIndex').value;
 
-    if(!name || !dept) return alert("Please, fill all detail!");
+    if(!name || !dept || !customId) return alert("Please, fill all details!");
+
+    // --- UNIQUE ID CHECK START ---
+    const idExists = facultyMembers.some((f, index) => f.id === customId && index.toString() !== editIndex);
+
+    if(idExists) {
+        alert(`⚠️ Error: Faculty ID "${customId}" already exists! Please enter a unique ID.`);
+        return;
+    }
+    // --- UNIQUE ID CHECK END ---
 
     const facData = { 
-        id: customId || ("FAC-" + Date.now()), 
+        id: customId, 
         name: name, 
         role: roleTag, 
         dept: dept, 
@@ -364,6 +404,8 @@
 
     renderFaculty(); 
     closeModal();
+    
+    localStorage.setItem("facultyDB", JSON.stringify(facultyMembers));
 }
 
     function deleteFaculty(i) {
