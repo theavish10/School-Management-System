@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -110,7 +110,6 @@
             <div id="modalTabs" class="tab-header">
                 <button class="tab-btn active" onclick="openTab(event, 'info')">INFO</button>
                 <button class="tab-btn" onclick="openTab(event, 'attendance')">ATTENDANCE</button>
-                <!-- <button class="tab-btn" onclick="openTab(event, 'fees')">FEES</button> -->
             </div>
 
             <div id="info" class="tab-body active">
@@ -388,6 +387,336 @@ function saveStudent() {
                 const text = row.innerText.toLowerCase();
                 row.style.display = text.includes(query) ? "" : "none";
             });
+        }
+
+        window.onload = initPage;
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A//OS - Student Management</title>
+    <style>
+        :root {
+            --bg: #050505; --surface: #0a0a0a; --accent: #ef1010; 
+            --text: #fff; --border: #1a1a1a; --font-mono: 'Space Mono', monospace;
+            --delete: #ff0055; --edit: #00ccff;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&family=Syne:wght@800&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: var(--font-mono); display: flex; overflow-x: hidden; }
+
+        /* Sidebar & Layout */
+        .sidebar { 
+            width: 260px; border-right: 1px solid var(--border); padding: 2rem; 
+            position: fixed; height: 100vh; background: var(--bg); z-index: 1000;
+            transition: transform 0.3s ease; 
+        }
+        .sidebar.closed { transform: translateX(-260px); }
+        .sidebar ul li a:hover { color: var(--accent) !important; }
+        .content { flex: 1; margin-left: 260px; padding: 40px; transition: margin-left 0.3s ease; width: 100%; }
+        .content.full { margin-left: 0; }
+        
+        /* Header & Add Button */
+        .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .add-btn { background: var(--accent); color: #fff; border: none; padding: 12px 24px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-family: var(--font-mono); }
+        .add-btn:hover { box-shadow: 0 0 10px var(--accent); }
+
+        /* Table Styling */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: var(--surface); }
+        th { text-align: left; padding: 15px; border-bottom: 1px solid var(--border); color: var(--accent); font-size: 0.7rem; }
+        td { padding: 15px; border-bottom: 1px solid var(--border); font-size: 0.8rem; cursor: pointer; }
+        tr:hover { background: #111; }
+
+        /* Action Buttons */
+        .btn-action { background: transparent; border: 1px solid #333; color: #888; padding: 5px 10px; cursor: pointer; font-size: 0.6rem; margin-right: 5px; }
+        .btn-action.del:hover { border-color: var(--delete); color: var(--delete); }
+        .btn-action.edit:hover { border-color: var(--edit); color: var(--edit); }
+
+        /* Modal Styling */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-content { background: var(--surface); border: 1px solid var(--border); width: 500px; padding: 30px; position: relative; }
+        
+        /* Tabs Logic */
+        .tab-header { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+        .tab-btn { background: none; border: none; color: #444; padding: 10px 20px; cursor: pointer; font-family: var(--font-mono); font-weight: bold; }
+        .tab-btn.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
+        .tab-body { display: none; padding: 10px 0; }
+        .tab-body.active { display: block; }
+
+        /* Form Styling */
+        input, select { width: 100%; background: #000; border: 1px solid var(--border); padding: 12px; color: #fff; margin-bottom: 15px; font-family: var(--font-mono); outline: none; }
+        .save-btn { width: 100%; background: var(--accent); color: #000; border: none; padding: 15px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .close-btn { position: absolute; right: 20px; top: 20px; color: #ff0055; cursor: pointer; font-weight: bold; }
+        .toggle-btn { position: fixed; bottom: 20px; left: 20px; z-index: 1100; background: var(--accent); border: none; padding: 10px; cursor: pointer; font-weight: bold; font-family: var(--font-mono); }
+    </style>
+</head>
+<body>
+
+    <button class="toggle-btn" onclick="toggleMenu()">MENU</button>
+
+    <nav class="sidebar" id="sidebar">
+        <div style="font-family: 'Syne'; font-size: 2rem; color: var(--accent); margin-bottom: 2rem;">A//OS</div>
+        <ul id="navLinks" style="list-style: none;"></ul>
+    </nav>
+
+    <main class="content" id="mainContent">
+        <div class="header-flex">
+            <h1 style="font-family: 'Syne'; font-size: 3rem; letter-spacing: -2px;">DIRECTORY</h1>
+            <button class="add-btn" id="addBtnMain" onclick="openAddModal()">+ NEW ENTRY</button>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <input type="text" id="studentSearch" placeholder="SEARCH BY NAME, CLASS OR STUDENT ID..." 
+            style="border-left: 4px solid var(--accent);" onkeyup="filterStudentTable()">
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>NAME</th>
+                    <th>CLASS</th>
+                    <th>STATUS</th>
+                    <th style="text-align: right;">MANAGEMENT</th>
+                </tr>
+            </thead>
+            <tbody id="studentTable"></tbody>
+        </table>
+    </main>
+
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeProfile()">[ CLOSE ]</span>
+            <h2 id="profName" style="font-family: 'Syne'; margin-bottom: 5px; text-transform: uppercase;">STUDENT NAME</h2>
+            <p id="profId" style="font-size: 0.7rem; color: #444; margin-bottom: 20px;">ID: #0000</p>
+
+            <div id="modalTabs" class="tab-header">
+                <button class="tab-btn active" onclick="openTab(event, 'info')">INFO</button>
+                <button class="tab-btn" onclick="openTab(event, 'attendance')">ATTENDANCE</button>
+            </div>
+
+            <div id="info" class="tab-body active">
+                <p>CLASS: <span id="profClass"></span></p>
+                <p>JOINED: <span id="profJoin">2025-09-15</span></p> 
+                <p>CONTACT: <span id="profContact">+91 98XXX XXXXX</span></p>
+                <div style="margin-top: 20px; border-top: 1px solid #111; padding-top: 20px;">
+                    <button class="btn-action edit" id="mainEditBtn" style="width: 100%; padding: 10px;">EDIT THIS RECORD</button>
+                </div>
+            </div>
+
+            <div id="attendance" class="tab-body">
+                <p>TOTAL SESSIONS: 45</p>
+                <p>PRESENT: 42</p>
+                <p style="color: var(--accent);">ATTENDANCE: 93.3%</p>
+            </div>
+
+            <div id="formBody" style="display: none;">
+                <input type="hidden" id="editIndex">
+                <input type="text" id="inputID" placeholder="STUDENT ID (e.g. S-101)">
+                <input type="text" id="inputName" placeholder="FULL NAME">
+                <input type="text" id="inputClass" placeholder="CLASS (e.g. Grade X-A)">
+                <input type="number" id="inputFees" placeholder="MONTHLY FEES (e.g. 20000)">
+                <button class="save-btn" onclick="saveStudent()">SAVE TO DATABASE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="extraEditModal" class="modal" style="z-index: 3000;">
+        <div class="modal-content" style="border-top: 4px solid var(--edit);">
+            <h2 style="font-family: 'Syne'; margin-bottom: 20px; color: var(--edit);">UPDATE PROFILE INFO</h2>
+            <label style="font-size: 0.6rem; color: #444;">JOINING DATE</label>
+            <input type="date" id="extraJoin">
+            <label style="font-size: 0.6rem; color: #444;">MOBILE NUMBER</label>
+            <input type="text" id="extraContact" placeholder="+91 XXXXX XXXXX">
+            <button class="save-btn" style="background: var(--edit);" onclick="saveExtraDetails()">UPDATE DETAILS</button>
+            <button onclick="document.getElementById('extraEditModal').style.display='none'" style="background:none; border:none; color:#555; width:100%; margin-top:10px; cursor:pointer;">[ CANCEL ]</button>
+        </div>
+    </div>
+
+    <script>
+        const role = localStorage.getItem('userRole') || 'admin';
+        let students = JSON.parse(localStorage.getItem('studentDB')) || [
+            { id: "STU-101", name: "Avish Kr. Saluja", class: "Grade X-A", status: "Active", fees: 20000, joined: "2025-09-15", contact: "+91 98XXX XXXXX" },
+            { id: "STU-002", name: "Anjali Sharma", class: "Grade X-B", status: "Active", fees: 20000, joined: "2025-09-20", contact: "+91 98XXX XXXXX" }
+        ];
+
+        let currentActiveIndex = null;
+
+        function initPage() {
+            renderSidebar();
+            renderStudents();
+            checkUrlAction();
+        }
+
+        function renderSidebar() {
+            const nav = document.getElementById('navLinks');
+            const addBtn = document.getElementById('addBtnMain');
+            if (role === 'admin') {
+                nav.innerHTML = `
+                    <li style="margin: 1rem 0;"><a href="dashboard.html" style="color: #444; text-decoration: none;">DASHBOARD</a></li>
+                    <li style="margin: 1rem 0;"><a href="students.html" style="color: var(--accent); text-decoration: none;">STUDENTS</a></li>
+                `;
+            } else {
+                nav.innerHTML = `
+                    <li style="margin: 1rem 0;"><a href="dashboard.html" style="color: #444; text-decoration: none;">DASHBOARD</a></li>
+                    <li style="margin: 1rem 0;"><a href="students.html" style="color: var(--accent); text-decoration: none;">MY STUDENTS</a></li>
+                `;
+                if(role === 'student') addBtn.style.display = 'none';
+            }
+        }
+
+        function renderStudents() {
+            const table = document.getElementById('studentTable');
+            table.innerHTML = students.map((s, i) => `
+                <tr>
+                    <td onclick="showProfile(${i})">${s.id}</td>
+                    <td onclick="showProfile(${i})" style="font-weight:bold">${s.name}</td>
+                    <td onclick="showProfile(${i})">${s.class}</td>
+                    <td onclick="showProfile(${i})" style="color: var(--accent)">${s.status}</td>
+                    <td style="text-align: right;">
+                        <button class="btn-action edit" onclick="openEditMode(${i})">EDIT</button>
+                        ${role === 'admin' ? `<button class="btn-action del" onclick="deleteStudent(${i})">DELETE</button>` : ''}
+                    </td>
+                </tr>
+            `).join('');
+            localStorage.setItem('studentDB', JSON.stringify(students));
+        }
+
+        function openAddModal() {
+            resetModal();
+            document.getElementById('profName').innerText = "NEW REGISTRATION";
+            document.getElementById('modalTabs').style.display = 'none';
+            document.getElementById('info').classList.remove('active');
+            document.getElementById('formBody').style.display = 'block';
+            document.getElementById('inputID').disabled = false;
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+
+        function openEditMode(index) {
+            const s = students[index];
+            openAddModal();
+            document.getElementById('profName').innerText = "EDIT RECORD";
+            document.getElementById('editIndex').value = index;
+            document.getElementById('inputID').value = s.id;
+            document.getElementById('inputName').value = s.name;
+            document.getElementById('inputClass').value = s.class;
+            document.getElementById('inputFees').value = s.fees || 20000;
+        }
+
+        function saveStudent() {
+            const id = document.getElementById('inputID').value.trim();
+            const name = document.getElementById('inputName').value.trim();
+            const className = document.getElementById('inputClass').value.trim();
+            const feesVal = document.getElementById('inputFees').value;
+            const monthlyFees = feesVal ? feesVal : 20000; 
+            const editIndex = document.getElementById('editIndex').value;
+
+            if(!id || !name || !className) return alert("Please, fill all detail!");
+
+            // Unique ID Check Logic
+            const idExists = students.some((s, idx) => s.id === id && idx.toString() !== editIndex);
+            if(idExists) {
+                alert(`⚠️ Error: ID "${id}" already exists! Please enter a unique ID.`);
+                return;
+            }
+
+            if(editIndex === "") {
+                students.push({ 
+                    id, name, class: className, fees: monthlyFees, status: "Active",
+                    joined: new Date().toISOString().split('T')[0], contact: "+91 XXXXX XXXXX"
+                });
+            } else {
+                students[editIndex].id = id;
+                students[editIndex].name = name;
+                students[editIndex].class = className;
+                students[editIndex].fees = monthlyFees;
+            }
+            renderStudents();
+            closeProfile();
+        }
+
+        // Profile Info Edit Logic
+        function openExtraEdit() {
+            const s = students[currentActiveIndex];
+            document.getElementById('extraJoin').value = s.joined || "";
+            document.getElementById('extraContact').value = s.contact || "";
+            document.getElementById('extraEditModal').style.display = 'flex';
+        }
+
+        function saveExtraDetails() {
+            students[currentActiveIndex].joined = document.getElementById('extraJoin').value;
+            students[currentActiveIndex].contact = document.getElementById('extraContact').value;
+            localStorage.setItem('studentDB', JSON.stringify(students));
+            document.getElementById('extraEditModal').style.display = 'none';
+            showProfile(currentActiveIndex); // UI Refresh
+        }
+
+        function showProfile(index) {
+            resetModal();
+            currentActiveIndex = index;
+            const s = students[index];
+            document.getElementById('profName').innerText = s.name.toUpperCase();
+            document.getElementById('profId').innerText = `ID: ${s.id}`;
+            document.getElementById('profClass').innerText = s.class;
+            document.getElementById('profJoin').innerText = s.joined || "N/A";
+            document.getElementById('profContact').innerText = s.contact || "N/A";
+            document.getElementById('mainEditBtn').onclick = openExtraEdit;
+            document.getElementById('profileModal').style.display = 'flex';
+        }
+
+        function deleteStudent(i) {
+            if(confirm("Permanently delete this student?")) {
+                students.splice(i, 1);
+                renderStudents();
+            }
+        }
+
+        function resetModal() {
+            document.getElementById('modalTabs').style.display = 'flex';
+            document.getElementById('formBody').style.display = 'none';
+            document.getElementById('info').classList.add('active');
+            document.getElementById('attendance').classList.remove('active');
+            document.getElementById('editIndex').value = "";
+            document.getElementById('inputID').value = "";
+            document.getElementById('inputName').value = "";
+            document.getElementById('inputClass').value = "";
+            document.getElementById('inputFees').value = "";
+        }
+
+        function closeProfile() {
+            document.getElementById('profileModal').style.display = 'none';
+        }
+
+        function openTab(evt, tabName) {
+            const contents = document.getElementsByClassName("tab-body");
+            for (let x of contents) x.classList.remove("active");
+            const btns = document.getElementsByClassName("tab-btn");
+            for (let x of btns) x.classList.remove("active");
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('closed');
+            document.getElementById('mainContent').classList.toggle('full');
+        }
+
+        function filterStudentTable() {
+            const query = document.getElementById('studentSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#studentTable tr'); 
+            rows.forEach(row => {
+                row.style.display = row.innerText.toLowerCase().includes(query) ? "" : "none";
+            });
+        }
+
+        function checkUrlAction() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('action') === 'add') setTimeout(openAddModal, 100);
         }
 
         window.onload = initPage;
